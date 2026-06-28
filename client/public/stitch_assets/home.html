@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GreenBin - Smart Waste Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#002204",
+                      "tertiary-container": "#782e97",
+                      "tertiary-fixed-dim": "#ecb2ff",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-high": "#dde9f9",
+                      "outline-variant": "#c0c9bf",
+                      "on-primary-container": "#90d2a5",
+                      "on-tertiary-container": "#eaaeff",
+                      "inverse-surface": "#26323d",
+                      "secondary-fixed-dim": "#78dc77",
+                      "primary-fixed-dim": "#93d5a7",
+                      "surface-container-low": "#ecf4ff",
+                      "secondary-fixed": "#94f990",
+                      "secondary": "#006e1c",
+                      "surface": "#f7f9ff",
+                      "primary-container": "#1a5c38",
+                      "surface-variant": "#d7e4f3",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed": "#00210f",
+                      "on-tertiary-fixed": "#320047",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed-variant": "#0b522f",
+                      "primary-fixed": "#aef2c2",
+                      "surface-container": "#e3effe",
+                      "on-secondary-container": "#00731e",
+                      "surface-tint": "#2a6a45",
+                      "surface-dim": "#cfdbea",
+                      "error": "#ba1a1a",
+                      "surface-container-highest": "#d7e4f3",
+                      "outline": "#707971",
+                      "on-primary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "inverse-on-surface": "#e7f2ff",
+                      "on-surface": "#111d27",
+                      "on-surface-variant": "#404941",
+                      "on-background": "#111d27",
+                      "inverse-primary": "#93d5a7",
+                      "on-secondary-fixed-variant": "#005313",
+                      "background": "#f7f9ff",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#6c228c",
+                      "secondary-container": "#91f78e",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#f8d8ff",
+                      "primary": "#004324",
+                      "surface-bright": "#f7f9ff",
+                      "tertiary": "#5e0e7e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "40px",
+                      "sm": "16px",
+                      "base": "4px",
+                      "gutter": "20px",
+                      "margin-mobile": "16px",
+                      "xs": "8px",
+                      "xl": "64px",
+                      "margin-desktop": "32px",
+                      "md": "24px"
+              },
+              "fontFamily": {
+                      "mono-data": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .hero-gradient {
+            background: linear-gradient(180deg, rgba(26, 92, 56, 0.95) 0%, rgba(26, 92, 56, 0.8) 100%);
+        }
+        .bento-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bento-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 px-margin-desktop py-base flex justify-between items-center shadow-sm">
+<div class="flex items-center gap-xs">
+<img alt="GreenBin Logo" class="h-10 w-auto" src="data:image/png;base64,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"/>
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">GreenBin</span>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="font-body-md text-body-md text-primary font-semibold border-b-2 border-primary pb-1" href="#">Home</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">How It Works</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Login</a>
+</nav>
+<button class="md:hidden p-2 text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="pt-16">
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] flex items-center overflow-hidden">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img alt="Sustainable City Infrastructure" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzBmI-ox_ZshUxf_Z127mToJh-ANSCkmpN0Tjfeb0moHauSzvexBXcKNF5Q0gg3d77vBEdPuvQ6DsvkwzKNF32rbDGiI_8vnS6OTl05is6RnXtiNtfNkQnZVGVeicuUk3w-AW5vatoWrv-KWKncoVz4f_7YJmPjL1U_zoMsI8cJhZTzp-LOShffaUgyF1MDJ88ElExnz7f8tBb65JrAbKi856vpfc9W6BttyX-lU8qp8-7tEeG84ZeicSKE1x6ISe1NImg3BoLt3s"/>
+<div class="absolute inset-0 hero-gradient"></div>
+</div>
+<div class="container mx-auto px-margin-mobile md:px-margin-desktop relative z-10 grid md:grid-cols-2 gap-xl items-center">
+<div class="max-w-2xl">
+<span class="inline-block bg-secondary-container text-on-secondary-container px-sm py-base rounded-full font-label-md text-label-md mb-md uppercase tracking-wider">
+                        Future of City Logistics
+                    </span>
+<h1 class="font-display-lg text-display-lg text-white mb-md leading-[1.1]">
+                        Smart Waste.<br/>Cleaner Cities.
+                    </h1>
+<p class="font-body-lg text-body-lg text-primary-fixed mb-lg opacity-90 max-w-xl">
+                        Real-time bin monitoring, citizen reporting &amp; optimized collection routes — all in one platform designed for sustainable urban ecosystems.
+                    </p>
+<div class="flex flex-wrap gap-sm">
+<button class="bg-secondary text-white px-lg py-sm rounded-full font-label-md text-label-md hover:bg-secondary-fixed-dim transition-all shadow-lg active:scale-95">
+                            Citizen Login
+                        </button>
+<button class="border-2 border-white text-white px-lg py-sm rounded-full font-label-md text-label-md hover:bg-white hover:text-primary transition-all active:scale-95">
+                            Admin Dashboard
+                        </button>
+</div>
+</div>
+<!-- Atmospheric Micro-interaction Graphic -->
+<div class="hidden md:block relative h-[500px]">
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-80 h-80 bg-secondary/20 rounded-full blur-[100px] animate-pulse"></div>
+</div>
+<!-- Stats Card Float -->
+<div class="absolute top-1/4 right-0 bg-surface/90 backdrop-blur-lg p-md rounded-xl shadow-xl border border-white/20 animate-bounce transition-transform duration-[3000ms]" style="animation-duration: 4s;">
+<div class="flex items-center gap-sm">
+<div class="p-xs bg-primary-container rounded-lg">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1">eco</span>
+</div>
+<div>
+<p class="text-label-md font-label-md text-on-surface-variant">Carbon Saved</p>
+<p class="text-title-lg font-title-lg text-primary">12.4 Tons</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="py-xl bg-surface">
+<div class="container mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="mb-lg max-w-3xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-xs">Platform Capabilities</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Leveraging IoT and community engagement to revolutionize municipal waste management.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Card 1: Sensors -->
+<div class="bento-card bg-surface-container-low border border-outline-variant/30 p-md rounded-xl flex flex-col justify-between group">
+<div class="mb-lg">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-primary-container text-[28px]" data-icon="sensors">sensors</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-sm">Live Bin Monitoring</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                Real-time fill level sensors notify operators the moment a bin requires servicing, preventing overflow before it happens.
+                            </p>
+</div>
+<div class="flex items-center gap-xs text-secondary font-semibold cursor-pointer">
+<span class="text-label-md">Learn more</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+<!-- Card 2: Reports -->
+<div class="bento-card bg-surface-container-low border border-outline-variant/30 p-md rounded-xl flex flex-col justify-between group">
+<div class="mb-lg">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-tertiary-container text-[28px]" data-icon="air">air</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-sm">Citizen Smell Reports</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                Direct feedback loop for residents to report odor issues or damaged bins, automatically geotagged for rapid response.
+                            </p>
+</div>
+<div class="flex items-center gap-xs text-secondary font-semibold cursor-pointer">
+<span class="text-label-md">Open reporter</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+<!-- Card 3: Optimization -->
+<div class="bento-card bg-surface-container-low border border-outline-variant/30 p-md rounded-xl flex flex-col justify-between group">
+<div class="mb-lg">
+<div class="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-secondary-container text-[28px]" data-icon="route">route</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-sm">Smart Route Optimization</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                                Dynamic routing algorithms reduce fuel consumption by up to 30% by only targeting bins that need collection.
+                            </p>
+</div>
+<div class="flex items-center gap-xs text-secondary font-semibold cursor-pointer">
+<span class="text-label-md">View demo</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Dynamic Map Preview Section -->
+<section class="py-xl bg-surface-container">
+<div class="container mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="grid md:grid-cols-5 gap-xl items-center">
+<div class="md:col-span-2 order-2 md:order-1">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-md leading-tight">Total City Visibility at Your Fingertips</h2>
+<ul class="space-y-md mb-lg">
+<li class="flex items-start gap-sm">
+<div class="mt-1 p-xs bg-primary/10 rounded-full">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1">check_circle</span>
+</div>
+<div>
+<p class="font-title-lg text-body-lg font-bold text-on-surface">98% Service Reliability</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Drastically reduce complaints through predictive maintenance.</p>
+</div>
+</li>
+<li class="flex items-start gap-sm">
+<div class="mt-1 p-xs bg-primary/10 rounded-full">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1">check_circle</span>
+</div>
+<div>
+<p class="font-title-lg text-body-lg font-bold text-on-surface">Geofenced Fleet Alerts</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Automated alerts when collection vehicles enter critical zones.</p>
+</div>
+</li>
+</ul>
+<button class="bg-primary text-white px-lg py-sm rounded-xl font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-all flex items-center gap-xs">
+                            Request Demo Access
+                            <span class="material-symbols-outlined">launch</span>
+</button>
+</div>
+<div class="md:col-span-3 order-1 md:order-2">
+<div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-video md:aspect-[4/3]">
+<img class="w-full h-full object-cover" data-alt="A sophisticated interactive digital map interface of a modern smart city. The map features various green and red glowing circular markers indicating trash bin status. The style is clean, technical, and high-fidelity, using a color palette of deep forest green and soft whites. Transparent data overlays and UI panels on the sides show logistics metrics and route optimizations." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6YwwG9TrFarLSEpi_eCTMpR591m2RNq41Hn1nkrQ8LGPto5iW8pIo7-XcMLBLXU4Ms97F6cjkxaNPvajJtJC-_fcblAAjlR_MWkDf_jFEx10O1nd73xXJTiEsqdsK5zsRPxpy3U8nPRc-EM6dig7rZUhBUvxz8awLMFLDzOp-HgbY0mXmLqGpWs7hcEZZVEiiAOMxx2n4fN618GqiZ5qkbjFf4FDbVvS50FF62JmZERwznyq-fUboyorOJwo23dhqKn80litJYVc"/>
+<!-- Overlay UI Mockup -->
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md p-sm rounded-lg shadow-lg">
+<div class="flex items-center gap-xs mb-xs">
+<div class="w-3 h-3 bg-error rounded-full animate-pulse"></div>
+<span class="text-label-md font-bold text-on-surface">Critical Zone: Sector 7</span>
+</div>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">4 Bins Over Capacity</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Simple Footer -->
+<footer class="bg-primary-container py-lg text-on-primary-container px-margin-mobile md:px-margin-desktop">
+<div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-xs">
+<img alt="GreenBin Logo" class="h-8 w-auto invert brightness-0" src="data:image/png;base64,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"/>
+<span class="font-title-lg text-title-lg font-bold text-white">GreenBin</span>
+</div>
+<div class="flex gap-lg font-label-md text-label-md">
+<a class="hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-secondary-fixed transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-secondary-fixed transition-colors" href="#">Contact Support</a>
+</div>
+<p class="font-body-md text-body-md opacity-60">© 2024 GreenBin Technology. All rights reserved.</p>
+</div>
+</footer>
+<script>
+        // Micro-interactions and simple effects
+        document.querySelectorAll('.bento-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Potential for adding canvas or shader effects here
+            });
+        });
+
+        // Sticky header opacity change on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-md');
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.add('shadow-sm');
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body></html>
