@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GreenBin | Report Issue</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002204",
+                        "tertiary-container": "#782e97",
+                        "tertiary-fixed-dim": "#ecb2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#dde9f9",
+                        "outline-variant": "#c0c9bf",
+                        "on-primary-container": "#90d2a5",
+                        "on-tertiary-container": "#eaaeff",
+                        "inverse-surface": "#26323d",
+                        "secondary-fixed-dim": "#78dc77",
+                        "primary-fixed-dim": "#93d5a7",
+                        "surface-container-low": "#ecf4ff",
+                        "secondary-fixed": "#94f990",
+                        "secondary": "#006e1c",
+                        "surface": "#f7f9ff",
+                        "primary-container": "#1a5c38",
+                        "surface-variant": "#d7e4f3",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00210f",
+                        "on-tertiary-fixed": "#320047",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#0b522f",
+                        "primary-fixed": "#aef2c2",
+                        "surface-container": "#e3effe",
+                        "on-secondary-container": "#00731e",
+                        "surface-tint": "#2a6a45",
+                        "surface-dim": "#cfdbea",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#d7e4f3",
+                        "outline": "#707971",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#e7f2ff",
+                        "on-surface": "#111d27",
+                        "on-surface-variant": "#404941",
+                        "on-background": "#111d27",
+                        "inverse-primary": "#93d5a7",
+                        "on-secondary-fixed-variant": "#005313",
+                        "background": "#f7f9ff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#6c228c",
+                        "secondary-container": "#91f78e",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#f8d8ff",
+                        "primary": "#004324",
+                        "surface-bright": "#f7f9ff",
+                        "tertiary": "#5e0e7e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "gutter": "20px",
+                        "margin-mobile": "16px",
+                        "xs": "8px",
+                        "xl": "64px",
+                        "margin-desktop": "32px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "mono-data": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .step-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .pulse-marker {
+            box-shadow: 0 0 0 0 rgba(0, 67, 36, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 67, 36, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 67, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 67, 36, 0); }
+        }
+        .hide-step { display: none; transform: translateX(20px); opacity: 0; }
+        .active-step { display: block; transform: translateX(0); opacity: 1; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- Sidebar Navigation (Predicted Component: SideNavBar) -->
+<aside class="hidden md:flex flex-col h-screen left-0 w-64 bg-surface-container-low border-r border-outline-variant py-md px-sm gap-xs shrink-0">
+<div class="flex flex-col gap-base mb-lg px-sm">
+<span class="font-title-lg text-title-lg font-black text-primary">Smart Waste</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Operator Portal</span>
+</div>
+<nav class="flex flex-col gap-xs flex-1">
+<a class="flex items-center gap-sm text-on-surface-variant px-sm py-xs hover:bg-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Active State: Report Issue -->
+<a class="flex items-center gap-sm bg-primary-container text-on-primary-container rounded-xl px-sm py-xs border-l-4 border-primary transition-all translate-x-1" href="#">
+<span class="material-symbols-outlined">report_problem</span>
+<span class="font-label-md text-label-md">Report Issue</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-sm py-xs hover:bg-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md text-label-md">My Reports</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-sm py-xs hover:bg-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-md text-label-md">Leaderboard</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant px-sm py-xs hover:bg-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Admin Zones</span>
+</a>
+</nav>
+<div class="mt-auto px-sm">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded-full shadow-sm hover:scale-95 transition-transform flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Report
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop py-md">
+<!-- Top Navigation (Mobile/Small Screens) -->
+<header class="md:hidden flex justify-between items-center mb-md">
+<div class="font-headline-md text-headline-md font-bold text-primary">GreenBin</div>
+<button class="p-base text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Reporting Flow Header -->
+<div class="mb-lg">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Submit Field Report</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Identify and document waste management issues in real-time.</p>
+</div>
+<!-- Multi-Step Multi-Container Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter max-w-6xl">
+<!-- Main Reporting Card (Left/Center) -->
+<section class="lg:col-span-8 flex flex-col gap-gutter">
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-md shadow-sm relative overflow-hidden">
+<!-- Progress Tracker -->
+<div class="flex items-center gap-sm mb-lg">
+<div class="h-1 flex-1 bg-primary rounded-full transition-all duration-500" id="progress-1"></div>
+<div class="h-1 flex-1 bg-surface-variant rounded-full transition-all duration-500" id="progress-2"></div>
+<div class="h-1 flex-1 bg-surface-variant rounded-full transition-all duration-500" id="progress-3"></div>
+</div>
+<!-- Step 1: Find Your Bin -->
+<div class="step-transition active-step" id="step-1">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Find Your Bin</h2>
+</div>
+<div class="space-y-md">
+<div class="relative">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Bin Serial Code</label>
+<div class="flex gap-xs">
+<div class="relative flex-1">
+<input class="w-full bg-surface border border-outline-variant rounded-xl px-md py-sm focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="Enter ID (e.g. GB-123)" type="text" value="GB-042"/>
+<button class="absolute right-xs top-1/2 -translate-y-1/2 p-xs text-primary-container hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+</button>
+</div>
+<button class="bg-secondary-container text-on-secondary-container px-md py-sm rounded-xl font-label-md text-label-md flex items-center gap-xs hover:bg-secondary-container/80 transition-colors">
+<span class="material-symbols-outlined">map</span>
+                                        Locate on Map
+                                    </button>
+</div>
+</div>
+<div class="bg-surface p-sm rounded-xl border border-dashed border-outline flex items-center justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Identified Asset</p>
+<p class="font-title-lg text-title-lg text-primary">Bin #GB-042</p>
+<p class="font-body-md text-body-md text-on-surface">Sector 14 • Central Park Entrance</p>
+</div>
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">delete</span>
+</div>
+</div>
+<div class="flex justify-end pt-md border-t border-outline-variant/30">
+<button class="bg-primary text-on-primary px-xl py-sm rounded-full font-label-md text-label-md hover:scale-95 active:scale-90 transition-transform" onclick="goToStep(2)">
+                                    Next Step
+                                </button>
+</div>
+</div>
+</div>
+<!-- Step 2: Describe Issue -->
+<div class="step-transition hide-step" id="step-2">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">error</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Describe the Issue</h2>
+</div>
+<div class="space-y-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-sm">Issue Category</label>
+<div class="flex flex-wrap gap-xs">
+<button class="px-md py-xs rounded-full border border-outline text-on-surface-variant font-label-md text-label-md transition-all active:bg-primary-container active:text-on-primary-container" onclick="togglePill(this)">Foul Smell</button>
+<button class="px-md py-xs rounded-full border border-outline text-on-surface-variant font-label-md text-label-md transition-all" onclick="togglePill(this)">Overflow</button>
+<button class="px-md py-xs rounded-full border border-outline text-on-surface-variant font-label-md text-label-md transition-all" onclick="togglePill(this)">Damaged</button>
+<button class="px-md py-xs rounded-full border border-outline text-on-surface-variant font-label-md text-label-md transition-all" onclick="togglePill(this)">Dumping</button>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Photo Evidence</label>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center gap-xs bg-surface/50 hover:bg-surface transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-primary text-4xl">cloud_upload</span>
+<p class="font-body-md text-body-md text-on-surface">Drag &amp; drop or <span class="text-primary font-bold">browse</span></p>
+<p class="text-[10px] text-outline">JPEG or PNG up to 10MB</p>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-xs">Additional Details</label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-xl px-md py-sm focus:ring-2 focus:ring-primary outline-none transition-all h-24" placeholder="Briefly describe the situation..."></textarea>
+</div>
+<div class="flex justify-between pt-md border-t border-outline-variant/30">
+<button class="text-primary font-label-md text-label-md px-md py-sm rounded-full hover:bg-primary/5 transition-colors" onclick="goToStep(1)">Back</button>
+<button class="bg-primary text-on-primary px-xl py-sm rounded-full font-label-md text-label-md hover:scale-95 active:scale-90 transition-transform" onclick="goToStep(3)">
+                                    Next Step
+                                </button>
+</div>
+</div>
+</div>
+<!-- Step 3: Confirm & Submit -->
+<div class="step-transition hide-step" id="step-3">
+<div class="flex items-center gap-xs mb-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Confirm &amp; Submit</h2>
+</div>
+<div class="space-y-md">
+<div class="bg-surface-container rounded-xl p-md space-y-sm">
+<div class="flex justify-between items-center pb-xs border-b border-outline-variant">
+<span class="text-outline text-[12px] uppercase font-bold tracking-widest">Report Summary</span>
+<span class="text-primary text-[12px] font-bold">Review Mode</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Asset</span>
+<span class="text-on-surface font-bold">Bin #GB-042</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Category</span>
+<span class="text-on-surface font-bold">Foul Smell</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Location</span>
+<span class="text-on-surface">Sector 14</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Evidence</span>
+<span class="text-on-surface">1 Attachment</span>
+</div>
+</div>
+<p class="text-body-md text-on-surface-variant text-center px-lg">By submitting, you confirm the accuracy of this field report for municipal dispatch.</p>
+<div class="flex flex-col gap-sm pt-md border-t border-outline-variant/30">
+<button class="w-full bg-primary text-on-primary py-md rounded-full font-label-md text-title-lg hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-sm" onclick="showSuccess()">
+                                    Submit Report
+                                    <span class="material-symbols-outlined">send</span>
+</button>
+<button class="text-outline font-label-md text-label-md text-center py-xs" onclick="goToStep(2)">Go back and edit</button>
+</div>
+</div>
+</div>
+<!-- Success State -->
+<div class="step-transition hide-step text-center py-lg" id="success-state">
+<div class="w-24 h-24 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mx-auto mb-md pulse-marker">
+<span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Report Submitted!</h2>
+<p class="text-on-surface-variant mb-md">Ticket ID: <span class="font-mono-data text-mono-data text-primary font-bold">#TK-2026-0891</span></p>
+<div class="bg-secondary-container/30 text-on-secondary-container px-md py-sm rounded-xl inline-flex items-center gap-xs font-bold mb-lg">
+<span class="material-symbols-outlined">eco</span>
+                            +10 points added 🌿
+                        </div>
+<div class="flex flex-col gap-sm max-w-xs mx-auto">
+<a class="bg-on-surface text-surface py-sm rounded-full font-label-md text-label-md flex items-center justify-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+                                Track Ticket Status
+                            </a>
+<button class="text-primary font-label-md text-label-md py-sm" onclick="location.reload()">Submit Another Issue</button>
+</div>
+</div>
+</div>
+<!-- Guidance Card -->
+<div class="bg-tertiary-fixed text-on-tertiary-fixed p-md rounded-xl flex gap-md items-center">
+<span class="material-symbols-outlined text-4xl opacity-70">info</span>
+<div>
+<p class="font-title-lg text-title-lg">Operator Tip</p>
+<p class="text-body-md opacity-90">Accurate reports help our AI optimize collection routes, reducing carbon emissions by up to 14%.</p>
+</div>
+</div>
+</section>
+<!-- Map View / Secondary Info (Right) -->
+<aside class="lg:col-span-4 flex flex-col gap-gutter">
+<!-- Location Preview Card -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl overflow-hidden shadow-sm h-full">
+<div class="h-64 relative bg-surface-container-highest">
+<div class="w-full h-full bg-cover bg-center" data-alt="A clean, minimalist high-angle satellite map view of an urban park area with street grids and green spaces. The map style is corporate modern with soft greens and light greys, featuring a single prominent pin marker with a soft pulse effect indicating a specific waste bin location. The lighting is bright and professional, suggesting a high-tech smart city monitoring tool." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCsmjWDxsnye6reDXWn6_9N7_IVsGOdNK-4r6PH07gP6MM61hZkJIHu0B-gcZ5W1nqp2zquLiLzv5oDTXCO1IC9doIQcVPSlFx_XtVQBHkzyIFveSGP_V7Wq6G6Qcov9mw96LTYVzBfUghQ6zNnHvVO0gzUItosVLFZiJy55YR6mqrm01Pz3Zob57D4xAYvjVsLA81jqYxKtm_gqtS058pwst8u-t_7haH8xdxe2TVEY9WLsFsC2pea49-HPUYZrLodj995v4sCWY')"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-8 h-8 bg-primary rounded-full border-2 border-white shadow-lg pulse-marker"></div>
+</div>
+</div>
+<div class="p-md">
+<div class="flex items-center justify-between mb-sm">
+<span class="bg-secondary text-on-secondary px-xs py-[2px] rounded text-[10px] font-bold uppercase tracking-widest">Active Status</span>
+<span class="text-outline text-[12px]">Last ping: 2m ago</span>
+</div>
+<h3 class="font-title-lg text-title-lg mb-xs">Sector 14 Hub</h3>
+<p class="text-on-surface-variant text-body-md mb-md">Corner of Main St &amp; Park Ave. Near the transit terminal.</p>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface p-sm rounded-lg border border-outline-variant/20">
+<p class="text-outline text-[10px] uppercase font-bold">Fill Level</p>
+<p class="text-headline-md text-on-surface">82%</p>
+</div>
+<div class="bg-surface p-sm rounded-lg border border-outline-variant/20">
+<p class="text-outline text-[10px] uppercase font-bold">Uptime</p>
+<p class="text-headline-md text-on-surface">99.8%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Weather/Conditions Card -->
+<div class="bg-surface-container-low border border-outline-variant/30 rounded-xl p-md">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-outline text-label-md">Local Conditions</p>
+<p class="text-title-lg font-bold">72°F Sunny</p>
+</div>
+<span class="material-symbols-outlined text-4xl text-primary">sunny</span>
+</div>
+<p class="mt-sm text-body-md text-on-surface-variant">High odor risk today due to rising temperatures.</p>
+</div>
+</aside>
+</div>
+</main>
+<script>
+        let currentStep = 1;
+
+        function goToStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-transition').forEach(el => {
+                el.classList.add('hide-step');
+                el.classList.remove('active-step');
+            });
+
+            // Show active step
+            const activeEl = document.getElementById(`step-${step}`);
+            if(activeEl) {
+                activeEl.classList.remove('hide-step');
+                activeEl.classList.add('active-step');
+            }
+
+            // Update Progress Bar
+            for(let i = 1; i <= 3; i++) {
+                const prog = document.getElementById(`progress-${i}`);
+                if(i <= step) {
+                    prog.classList.add('bg-primary');
+                    prog.classList.remove('bg-surface-variant');
+                } else {
+                    prog.classList.remove('bg-primary');
+                    prog.classList.add('bg-surface-variant');
+                }
+            }
+            
+            currentStep = step;
+        }
+
+        function togglePill(btn) {
+            btn.classList.toggle('bg-primary-container');
+            btn.classList.toggle('text-on-primary-container');
+            btn.classList.toggle('border-primary');
+        }
+
+        function showSuccess() {
+            document.getElementById('step-3').classList.add('hide-step');
+            document.getElementById('step-3').classList.remove('active-step');
+            
+            const success = document.getElementById('success-state');
+            success.classList.remove('hide-step');
+            success.classList.add('active-step');
+            
+            // Pulse the progress bars to "full"
+            document.querySelectorAll('[id^="progress-"]').forEach(p => p.classList.add('bg-primary'));
+        }
+    </script>
+</body></html>

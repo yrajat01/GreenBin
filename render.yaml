@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: greenbin-backend
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: DEPOT_LAT
+        value: "26.8467"
+      - key: DEPOT_LNG
+        value: "80.9462"
+      - key: CLIENT_URL
+        value: "https://your-vercel-url.vercel.app"
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT_KEY
+        sync: false

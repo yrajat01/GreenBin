@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GreenBin - Collection Staff Route View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#002204",
+                    "tertiary-container": "#782e97",
+                    "tertiary-fixed-dim": "#ecb2ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#dde9f9",
+                    "outline-variant": "#c0c9bf",
+                    "on-primary-container": "#90d2a5",
+                    "on-tertiary-container": "#eaaeff",
+                    "inverse-surface": "#26323d",
+                    "secondary-fixed-dim": "#78dc77",
+                    "primary-fixed-dim": "#93d5a7",
+                    "surface-container-low": "#ecf4ff",
+                    "secondary-fixed": "#94f990",
+                    "secondary": "#006e1c",
+                    "surface": "#f7f9ff",
+                    "primary-container": "#1a5c38",
+                    "surface-variant": "#d7e4f3",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#00210f",
+                    "on-tertiary-fixed": "#320047",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#0b522f",
+                    "primary-fixed": "#aef2c2",
+                    "surface-container": "#e3effe",
+                    "on-secondary-container": "#00731e",
+                    "surface-tint": "#2a6a45",
+                    "surface-dim": "#cfdbea",
+                    "error": "#ba1a1a",
+                    "surface-container-highest": "#d7e4f3",
+                    "outline": "#707971",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#e7f2ff",
+                    "on-surface": "#111d27",
+                    "on-surface-variant": "#404941",
+                    "on-background": "#111d27",
+                    "inverse-primary": "#93d5a7",
+                    "on-secondary-fixed-variant": "#005313",
+                    "background": "#f7f9ff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#6c228c",
+                    "secondary-container": "#91f78e",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#f8d8ff",
+                    "primary": "#004324",
+                    "surface-bright": "#f7f9ff",
+                    "tertiary": "#5e0e7e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "40px",
+                    "sm": "16px",
+                    "base": "4px",
+                    "gutter": "20px",
+                    "margin-mobile": "16px",
+                    "xs": "8px",
+                    "xl": "64px",
+                    "margin-desktop": "32px",
+                    "md": "24px"
+            },
+            "fontFamily": {
+                    "mono-data": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        
+        .pulse-critical {
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(186, 26, 26, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(186, 26, 26, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(186, 26, 26, 0); }
+        }
+
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scroll-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-hidden flex flex-col h-screen max-w-[375px] mx-auto shadow-2xl border-x border-outline-variant">
+<!-- Top Navigation (Mobile Header Context) -->
+<header class="bg-surface px-margin-mobile py-sm flex items-center justify-between z-20">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">GreenBin</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a waste management operator wearing a reflective safety vest and a modern green cap. The lighting is bright and outdoor, reflecting a clean corporate sustainability aesthetic. The background is a blurred municipal depot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNr8adb3IQoMEd_d1che6rz6zQ-vQZ8AXZ57sMF0l3Sh4oo40jANNwpzDpUxm6TPD4Gh08Ch_Ca36rV22T9H4U85jqbAt50SVhJla5W4VOhH8vfU08sz-2gY1kP1gaIzsIfckLju20AJzm2H--d--5lZULzHyDGQtRTkea_t_Xw9asMU1HUFrNM6o96BdHfsEgqibVbA0sFmJdprRhG7cocExHS_mqL4PVJ9CPOroEr8q6uaM3DX1LlzGbIRkq_vP4YHxsErXjgd0"/>
+</div>
+</header>
+<!-- Header Stats Section -->
+<section class="px-margin-mobile pb-sm pt-xs bg-surface shadow-sm z-10">
+<div class="flex justify-between items-end mb-xs">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Today's Route</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-bold">4 of 9 Bins</h2>
+</div>
+<div class="text-right">
+<span class="font-label-md text-label-md text-secondary font-bold">8.2km Total</span>
+<p class="text-on-secondary-container bg-secondary-container px-xs py-0.5 rounded-full text-[10px] font-bold">2.1km SAVED</p>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden flex">
+<div class="h-full bg-primary w-[44%] rounded-r-full transition-all duration-700"></div>
+</div>
+</section>
+<!-- Route List (Scrollable) -->
+<main class="flex-1 overflow-y-auto scroll-hide px-margin-mobile py-md bg-background flex flex-col gap-md">
+<!-- Next Stop: Current Active Card -->
+<div class="flex flex-col gap-xs">
+<span class="font-label-md text-label-md text-primary font-bold">NEXT STOP</span>
+<div class="bg-surface-container-lowest rounded-xl p-sm border-2 border-primary shadow-md relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex justify-between items-start mb-sm">
+<div class="flex gap-sm items-center">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold text-lg">5</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">BIN-7742</h3>
+<p class="text-on-surface-variant text-body-md">242 Oak Street, East District</p>
+</div>
+</div>
+<span class="bg-error text-on-error px-xs py-1 rounded-lg font-bold text-[11px] pulse-critical">94% FULL</span>
+</div>
+<div class="flex items-center gap-xs mb-md">
+<span class="bg-surface-variant text-on-surface-variant px-xs py-1 rounded-md text-[10px] font-bold uppercase tracking-tight">Overflow Risk</span>
+<span class="bg-surface-variant text-on-surface-variant px-xs py-1 rounded-md text-[10px] font-bold uppercase tracking-tight">Paper/Cardboard</span>
+</div>
+<button class="w-full py-md bg-secondary text-white rounded-xl font-bold flex items-center justify-center gap-xs shadow-lg active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    Mark as Collected
+                </button>
+</div>
+</div>
+<!-- Upcoming Stops -->
+<div class="flex flex-col gap-sm">
+<span class="font-label-md text-label-md text-on-surface-variant">UPCOMING</span>
+<!-- Stop 6 -->
+<div class="bg-surface-container-low rounded-xl p-sm border border-outline-variant flex gap-sm items-center opacity-80">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant font-bold">6</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="font-bold text-on-surface">BIN-9011</h4>
+<span class="bg-tertiary-container text-on-tertiary-container px-xs py-0.5 rounded-md text-[10px] font-bold">SMELL ALERT</span>
+</div>
+<p class="text-on-surface-variant text-xs">12 Pine Avenue</p>
+</div>
+</div>
+<!-- Stop 7 -->
+<div class="bg-surface-container-low rounded-xl p-sm border border-outline-variant flex gap-sm items-center opacity-80">
+<div class="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant font-bold">7</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="font-bold text-on-surface">BIN-3312</h4>
+<span class="bg-surface-variant text-on-surface-variant px-xs py-0.5 rounded-md text-[10px] font-bold">82% FULL</span>
+</div>
+<p class="text-on-surface-variant text-xs">88 Cedar Lane</p>
+</div>
+</div>
+<!-- Map Context (Atmospheric) -->
+<div class="w-full h-32 rounded-xl overflow-hidden relative border border-outline-variant mt-xs">
+<div class="absolute inset-0 bg-surface-variant" data-alt="A clean, minimalist municipal map of a city district with stylized light-green streets and dark-slate building outlines. A prominent green path connects several circular markers, with one marker currently glowing red to indicate the next collection point. The visual style is technical, professional, and corporate modern." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_hARVIsVpsF-uECvFjRPBy09BOkr0sGdzCcdRx-3ykd77wYahxezlMVLzcZw2IVxyqXPItF9fsm4XRbrgbUQdGxAwGVmlQU2bZvGpsVFV3mxdwYcG17c-oVa8pmQbojICrXl5iKi5MAA7pbCXJjDgEu259P_oUl9f8Ikh9ldMiqzi1s0qEO1_FSAt-dAoNVBnBUsXIP6W2GMeb4BRlXYlC1RdUZwL8Ls1C3DM17n9dMEncuSjf372jHi-LBnBOSwkmZ-doq6Ly8M')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface/20 to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-xs bg-white/90 backdrop-blur-sm p-1.5 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="near_me">near_me</span>
+<span class="text-[10px] font-bold text-primary">0.8km to next bin</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Actions Sticky -->
+<footer class="bg-surface p-margin-mobile flex flex-col gap-sm shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+<button class="w-full py-md bg-outline-variant text-surface-container-highest rounded-xl font-bold flex items-center justify-center gap-xs cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined" data-icon="task_alt">task_alt</span>
+            Route Complete
+        </button>
+<button class="w-full py-sm text-error font-bold flex items-center justify-center gap-xs border border-error/20 rounded-xl hover:bg-error/5 transition-colors">
+<span class="material-symbols-outlined text-md" data-icon="report_problem">report_problem</span>
+            Report an Issue
+        </button>
+</footer>
+<!-- Interactive script for feedback -->
+<script>
+        document.querySelectorAll('button:not([disabled])').forEach(btn => {
+            btn.addEventListener('touchstart', () => btn.classList.add('scale-95'));
+            btn.addEventListener('touchend', () => btn.classList.remove('scale-95'));
+        });
+    </script>
+</body></html>

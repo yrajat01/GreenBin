@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GreenBin - Citizen Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002204",
+                        "tertiary-container": "#782e97",
+                        "tertiary-fixed-dim": "#ecb2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#dde9f9",
+                        "outline-variant": "#c0c9bf",
+                        "on-primary-container": "#90d2a5",
+                        "on-tertiary-container": "#eaaeff",
+                        "inverse-surface": "#26323d",
+                        "secondary-fixed-dim": "#78dc77",
+                        "primary-fixed-dim": "#93d5a7",
+                        "surface-container-low": "#ecf4ff",
+                        "secondary-fixed": "#94f990",
+                        "secondary": "#006e1c",
+                        "surface": "#f7f9ff",
+                        "primary-container": "#1a5c38",
+                        "surface-variant": "#d7e4f3",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00210f",
+                        "on-tertiary-fixed": "#320047",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#0b522f",
+                        "primary-fixed": "#aef2c2",
+                        "surface-container": "#e3effe",
+                        "on-secondary-container": "#00731e",
+                        "surface-tint": "#2a6a45",
+                        "surface-dim": "#cfdbea",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#d7e4f3",
+                        "outline": "#707971",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#e7f2ff",
+                        "on-surface": "#111d27",
+                        "on-surface-variant": "#404941",
+                        "on-background": "#111d27",
+                        "inverse-primary": "#93d5a7",
+                        "on-secondary-fixed-variant": "#005313",
+                        "background": "#f7f9ff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#6c228c",
+                        "secondary-container": "#91f78e",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#f8d8ff",
+                        "primary": "#004324",
+                        "surface-bright": "#f7f9ff",
+                        "tertiary": "#5e0e7e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "gutter": "20px",
+                        "margin-mobile": "16px",
+                        "xs": "8px",
+                        "xl": "64px",
+                        "margin-desktop": "32px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "mono-data": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .pulse-critical {
+            position: relative;
+        }
+        .pulse-critical::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: #ba1a1a;
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(.33); opacity: 1; }
+            80%, 100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .map-container {
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c0c9bf;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation (JSON-driven SideNavBar) -->
+<aside class="hidden md:flex flex-col h-full py-md px-sm gap-xs bg-primary-container text-primary-fixed docked h-screen left-0 w-64 border-r border-outline-variant">
+<div class="flex items-center gap-sm mb-lg px-xs">
+<img alt="GreenBin Logo" class="w-10 h-10 object-contain" src="data:image/png;base64,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"/>
+<div class="flex flex-col">
+<span class="font-title-lg text-title-lg font-black text-secondary-fixed">GreenBin</span>
+<span class="font-label-md text-label-md text-on-primary-container opacity-80 uppercase tracking-widest">Citizen App</span>
+</div>
+</div>
+<nav class="flex-grow space-y-base">
+<a class="flex items-center gap-sm bg-primary-container text-on-primary-container rounded-xl px-sm py-xs border-l-4 border-primary transition-all translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-variant transition-all px-sm py-xs rounded-xl opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+<span class="font-label-md text-label-md">Report Issue</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-variant transition-all px-sm py-xs rounded-xl opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-md text-label-md">My Reports</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-variant transition-all px-sm py-xs rounded-xl opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-md text-label-md">Leaderboard</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-variant transition-all px-sm py-xs rounded-xl opacity-70 hover:opacity-100 mt-xl" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</nav>
+<!-- User Info Anchor -->
+<div class="mt-auto p-sm bg-on-primary-fixed-variant rounded-xl flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full border-2 border-secondary-fixed overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young Southeast Asian man named Rajat smiling warmly. He is dressed in a smart-casual olive green shirt. The lighting is soft and natural, suggesting an outdoor park setting with lush green foliage blurred in the background. The aesthetic is clean, trustworthy, and modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2KUHyj-wO6KbNxRWpT9R1NVyqQDgKrAWYPT7q0RBI8PibRBqcQu5PdZ_hvb7yoI2Y1b99ozV5FbOFnQx9zIsKHpidvJYAnAydwdCi8LoBDlIoDpo8OU9KKizxuVGAnFMSiWIskALm2lhgYskRnXeJW1k0F-znqWpHWPDtCXn3rKEVynTN4Rpg9RRSaRKIDyl5mnPdbkKiQhHGtekyOhs3_LwgofMUnGDpPHW-IN7_5jowEItyvlFK-VYNY0JBUGBkDiUCoaBhZjI"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-secondary-fixed">Rajat</span>
+<span class="font-mono-data text-mono-data text-primary-fixed">120 pts 🌿</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-hidden bg-background">
+<!-- Top App Bar / Stats -->
+<header class="w-full px-margin-desktop py-md flex flex-wrap items-center justify-between gap-md">
+<div class="flex-grow">
+<h1 class="font-headline-md text-headline-md text-on-surface">Citizen Dashboard</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Welcome back, Rajat. Let's keep our city clean.</p>
+</div>
+<!-- Bento Style Stats -->
+<div class="flex gap-gutter items-center">
+<div class="bg-surface-container border border-outline-variant p-sm px-md rounded-xl shadow-sm flex items-center gap-sm">
+<div class="p-xs bg-secondary-container rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="delete">delete</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Bins Nearby</p>
+<p class="font-title-lg text-title-lg text-on-surface">12</p>
+</div>
+</div>
+<div class="bg-surface-container border border-outline-variant p-sm px-md rounded-xl shadow-sm flex items-center gap-sm">
+<div class="p-xs bg-tertiary-container text-on-tertiary-container rounded-lg">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">My Reports</p>
+<p class="font-title-lg text-title-lg text-on-surface">4</p>
+</div>
+</div>
+<div class="bg-primary-container p-sm px-md rounded-xl shadow-sm flex items-center gap-sm border border-primary">
+<div class="p-xs bg-secondary-fixed rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-fixed" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-primary-fixed opacity-80">Points Earned</p>
+<p class="font-title-lg text-title-lg text-primary-fixed">120 🌿</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Content Grid -->
+<div class="flex-1 overflow-y-auto px-margin-desktop pb-margin-desktop custom-scrollbar">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter h-full">
+<!-- Interactive Map Component (Centerpiece) -->
+<div class="lg:col-span-8 flex flex-col gap-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-title-lg text-title-lg flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary" data-icon="map">map</span>
+                                Smart Bin Map
+                            </h3>
+<div class="flex gap-xs">
+<span class="flex items-center gap-1 font-label-md text-label-md px-xs py-1 bg-surface-container-high rounded-full"><span class="w-2 h-2 rounded-full bg-secondary"></span> &lt;60%</span>
+<span class="flex items-center gap-1 font-label-md text-label-md px-xs py-1 bg-surface-container-high rounded-full"><span class="w-2 h-2 rounded-full bg-error"></span> 90%+</span>
+</div>
+</div>
+<!-- Map Canvas -->
+<div class="relative flex-grow min-h-[450px] bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm map-container">
+<div class="absolute inset-0 bg-cover bg-center opacity-40 grayscale-[0.5]" data-location="San Francisco" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCweUBg_EeHa_o7AvYMblQ3B_PjNlr0MwMVRvdWyh7bfYLKh9YrRJC2xuMmNjCjFGpwpLKrl60siiVzgx2tsUN8itqzicrnUpf8dfW-WDqKoNw4Gsj22dZI5Rs9uezDSMQiCy0K6bnYGQKhdCBViPzR4B2atiN2rCmuyEOK38tciKjTI9TK0tD5p9-HskY2c3ok_PAKLKwEKoXdQL7f_eXdo-ivLhmdSdY1UObfGx1T88fLp-kdyKuKo1O4tmSobiePJ8i-lyvdiKs')"></div>
+<!-- Interactive Pins Simulation -->
+<!-- Green Pin -->
+<div class="absolute top-1/4 left-1/3 cursor-pointer group">
+<div class="w-8 h-8 bg-secondary border-2 border-white rounded-full flex items-center justify-center shadow-md transform hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-[16px]" data-icon="delete">delete</span>
+</div>
+</div>
+<!-- Amber Pin -->
+<div class="absolute bottom-1/3 left-1/4 cursor-pointer group">
+<div class="w-8 h-8 bg-[#FFA000] border-2 border-white rounded-full flex items-center justify-center shadow-md transform hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-[16px]" data-icon="delete">delete</span>
+</div>
+</div>
+<!-- Red Pulsing Pin -->
+<div class="absolute top-1/2 right-1/4 cursor-pointer group pulse-critical">
+<div class="w-8 h-8 bg-error border-2 border-white rounded-full flex items-center justify-center shadow-md transform hover:scale-110 transition-transform relative z-10">
+<span class="material-symbols-outlined text-white text-[16px]" data-icon="warning">warning</span>
+</div>
+</div>
+<!-- Purple Smell Icon -->
+<div class="absolute top-1/3 right-1/3 cursor-pointer group">
+<div class="w-8 h-8 bg-tertiary border-2 border-white rounded-full flex items-center justify-center shadow-md transform hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-[16px]" data-icon="air">air</span>
+</div>
+</div>
+<!-- Map Popup (Centered on a bin for the prompt requirement) -->
+<div class="absolute top-[20%] right-[30%] bg-surface-container-lowest p-sm rounded-xl border border-outline-variant shadow-xl w-56 animate-in fade-in duration-300">
+<div class="flex justify-between items-start mb-xs">
+<div>
+<h4 class="font-label-md text-label-md text-primary uppercase font-bold tracking-tight">#GB-042</h4>
+<p class="font-mono-data text-[11px] text-on-surface-variant">Market St &amp; 5th</p>
+</div>
+<span class="px-xs py-base bg-error-container text-on-error-container font-label-md text-[10px] rounded uppercase">Critical</span>
+</div>
+<div class="space-y-xs">
+<div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="bg-error h-full w-[85%] rounded-full"></div>
+</div>
+<div class="flex justify-between font-label-md text-[12px]">
+<span>85% Fill</span>
+<span class="text-on-surface-variant">Last: 4h ago</span>
+</div>
+<button class="w-full mt-xs py-base bg-primary text-on-primary rounded-md font-label-md text-[11px] hover:bg-opacity-90 transition-colors">Route to Bin</button>
+</div>
+</div>
+<!-- Map Controls -->
+<div class="absolute bottom-sm right-sm flex flex-col gap-base">
+<button class="w-10 h-10 bg-white border border-outline-variant rounded-lg flex items-center justify-center shadow-md hover:bg-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="w-10 h-10 bg-white border border-outline-variant rounded-lg flex items-center justify-center shadow-md hover:bg-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<button class="w-10 h-10 bg-white border border-outline-variant rounded-lg flex items-center justify-center shadow-md hover:bg-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="my_location">my_location</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Side Panel: Quick Report -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<section class="bg-surface-container-low border border-outline-variant rounded-xl p-md shadow-sm">
+<h3 class="font-title-lg text-title-lg mb-md flex items-center gap-sm text-primary">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+                                Quick Report
+                            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">Notice something wrong? Report it immediately to earn clean-up points.</p>
+<form class="space-y-md">
+<div class="space-y-base">
+<label class="font-label-md text-label-md text-on-surface ml-base">Bin ID / Location Code</label>
+<input class="w-full px-sm py-md rounded-xl bg-surface border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary transition-all font-mono-data" placeholder="e.g. GB-042" type="text"/>
+</div>
+<div class="space-y-base">
+<label class="font-label-md text-label-md text-on-surface ml-base">Issue Type</label>
+<select class="w-full px-sm py-md rounded-xl bg-surface border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-md">
+<option>Foul Smell</option>
+<option>Overflow</option>
+<option>Damage/Vandalism</option>
+<option>Missed Collection</option>
+<option>Other</option>
+</select>
+</div>
+<div class="space-y-base">
+<label class="font-label-md text-label-md text-on-surface ml-base">Notes (Optional)</label>
+<textarea class="w-full px-sm py-md rounded-xl bg-surface border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-md" placeholder="Brief description..." rows="3"></textarea>
+</div>
+<button class="w-full bg-primary text-on-primary py-md rounded-full font-title-lg text-[16px] hover:shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-sm" type="submit">
+                                    Submit Report
+                                    <span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</form>
+</section>
+<!-- Recent Activity / Rewards Tip -->
+<section class="bg-primary-container p-md rounded-xl text-primary-fixed border border-primary/20 relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="font-title-lg text-title-lg mb-sm">Rewards Tip 🌿</h4>
+<p class="font-body-md text-body-md opacity-90">Reporting a "Smelly Bin" today earns you <span class="font-bold">+15 extra points</span>. Help our AI optimize the cleaning route!</p>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Mobile Bottom Navigation (JSON-driven BottomNavBar) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant flex justify-around items-center py-sm px-gutter z-50 shadow-lg">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-[10px]">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="report_problem">report_problem</span>
+<span class="font-label-md text-[10px]">Report</span>
+</a>
+<div class="relative -top-6">
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center border-4 border-surface ring-2 ring-primary">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-label-md text-[10px]">Rank</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-label-md text-[10px]">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for form submission
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span> Reporting...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span> Success!';
+                btn.classList.replace('bg-primary', 'bg-secondary');
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.replace('bg-secondary', 'bg-primary');
+                    btn.disabled = false;
+                    e.target.reset();
+                }, 2000);
+            }, 1500);
+        });
+    </script>
+</body></html>

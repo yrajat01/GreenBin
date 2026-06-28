@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GreenBin | Citizen Leaderboard &amp; Rewards</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Use Tailwind Config from instructions -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#002204",
+                    "tertiary-container": "#782e97",
+                    "tertiary-fixed-dim": "#ecb2ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#dde9f9",
+                    "outline-variant": "#c0c9bf",
+                    "on-primary-container": "#90d2a5",
+                    "on-tertiary-container": "#eaaeff",
+                    "inverse-surface": "#26323d",
+                    "secondary-fixed-dim": "#78dc77",
+                    "primary-fixed-dim": "#93d5a7",
+                    "surface-container-low": "#ecf4ff",
+                    "secondary-fixed": "#94f990",
+                    "secondary": "#006e1c",
+                    "surface": "#f7f9ff",
+                    "primary-container": "#1a5c38",
+                    "surface-variant": "#d7e4f3",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#00210f",
+                    "on-tertiary-fixed": "#320047",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#0b522f",
+                    "primary-fixed": "#aef2c2",
+                    "surface-container": "#e3effe",
+                    "on-secondary-container": "#00731e",
+                    "surface-tint": "#2a6a45",
+                    "surface-dim": "#cfdbea",
+                    "error": "#ba1a1a",
+                    "surface-container-highest": "#d7e4f3",
+                    "outline": "#707971",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#e7f2ff",
+                    "on-surface": "#111d27",
+                    "on-surface-variant": "#404941",
+                    "on-background": "#111d27",
+                    "inverse-primary": "#93d5a7",
+                    "on-secondary-fixed-variant": "#005313",
+                    "background": "#f7f9ff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#6c228c",
+                    "secondary-container": "#91f78e",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#f8d8ff",
+                    "primary": "#004324",
+                    "surface-bright": "#f7f9ff",
+                    "tertiary": "#5e0e7e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "40px",
+                    "sm": "16px",
+                    "base": "4px",
+                    "gutter": "20px",
+                    "margin-mobile": "16px",
+                    "xs": "8px",
+                    "xl": "64px",
+                    "margin-desktop": "32px",
+                    "md": "24px"
+            },
+            "fontFamily": {
+                    "mono-data": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(17, 29, 39, 0.1);
+        }
+        .progress-bar-glow {
+            box-shadow: 0 0 12px rgba(144, 210, 165, 0.4);
+        }
+        .zebra-row:nth-child(even) {
+            background-color: #f7f9ff;
+        }
+        .highlight-accent {
+            border-left: 4px solid #006e1c;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopNavBar (Shared Component Translation) -->
+<header class="bg-surface sticky top-0 z-50 flex justify-between items-center w-full px-margin-desktop py-base border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-sm">
+<span class="font-headline-md text-headline-md font-bold text-primary">GreenBin</span>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Home</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">How It Works</a>
+<a class="font-body-md text-body-md text-primary border-b-2 border-primary pb-1" href="#">Leaderboard</a>
+</nav>
+<div class="flex items-center gap-sm">
+<div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
+<img class="object-cover w-full h-full" data-alt="A professional studio headshot of Rajat, a young man with a friendly and determined expression, set against a soft blurred background of an urban green park. The lighting is warm and natural, reflecting the sustainable brand identity of GreenBin with fresh green tones and high-quality digital photography feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC9CKi0tD-LQ0Dqs7omkR2cWebpz1mSsQ5ggPC9sWIPMeVKMcdT-1-Tm8Qji-R_3ZOJ57d8zN7UZo02M_60S9_4HSugUSp5L3MU0HM13PvYp_cLMEvip5HB0N2VcVEaH1BlvmbFf0B_CIxm0ldWCVnpuJf3R2e5WMLD_3gwOeNMCsASs8lso40043Vsq1DsijJT9ZZvaCwIxyZ7aOIBAfRQLWObyb5I7xBDcI-hLK_PokY1_x8_-opsY_6AhjSUcnkF68mV0IRvlg"/>
+</div>
+<button class="font-body-md text-body-md text-primary hover:underline transition-all active:scale-95">Logout</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin-desktop py-lg space-y-lg">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+<div>
+<h1 class="font-display-lg text-display-lg text-primary">Leaderboard</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Compete with your neighbors to build a cleaner, greener Sector 14. Every report counts towards your city's sustainability goals.</p>
+</div>
+<div class="flex gap-xs">
+<div class="flex flex-col items-center p-sm bg-surface-container rounded-xl min-w-[120px]">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">Global Rank</span>
+<span class="font-headline-lg text-headline-lg text-primary">#142</span>
+</div>
+<div class="flex flex-col items-center p-sm bg-primary-container rounded-xl min-w-[120px]">
+<span class="font-label-md text-label-md text-on-primary-container uppercase">Zone Rank</span>
+<span class="font-headline-lg text-headline-lg text-on-primary">#3</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- User Profile & Progress Card -->
+<div class="lg:col-span-5 flex flex-col gap-gutter">
+<div class="glass-card rounded-xl p-md shadow-sm border border-outline-variant flex flex-col gap-md">
+<div class="flex items-center gap-md">
+<div class="w-20 h-20 rounded-full bg-secondary-fixed flex items-center justify-center relative overflow-hidden shadow-sm">
+<img class="object-cover w-full h-full" data-alt="A close-up portrait of Rajat, showing a positive and committed urban resident. He is wearing a simple casual shirt. The background has subtle leaf patterns and a soft bokeh effect, conveying a clean, eco-friendly atmosphere consistent with modern corporate sustainability designs." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9NYu3huPzfgKv5G3WEr0OMhII0Yd7-ezNUkce1SM7bNNMpASlYq58A-ZYlt0ngP9ZwABx9FamMFlvCEnANwX-sNzx9PmgEb-AW3vDZ-XWJld_IHSUkmptJlTEo3vsi01KJNryTavGC95tlANt7T6QxxkUBnniDzd9maH7r4VhYlIEv88yFiukS4OIP3cta76cQB7fjL0ayyP81YHTYVekQ_LTz9chd7NzsypAUoiLSLCltRtardb37EY06iedmBrcGhcryCZBvbw"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Rajat</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Sector 14 • Premium Member</p>
+<div class="flex items-center gap-xs mt-1">
+<span class="material-symbols-outlined text-primary text-sm">stars</span>
+<span class="font-mono-data text-mono-data text-primary">2,450 Points</span>
+</div>
+</div>
+</div>
+<div class="space-y-xs pt-base">
+<div class="flex justify-between items-end">
+<span class="font-label-md text-label-md text-on-surface">Eco Champion Progress</span>
+<span class="font-mono-data text-mono-data text-secondary">82%</span>
+</div>
+<div class="w-full h-3 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary progress-bar-glow rounded-full transition-all duration-1000" style="width: 82%;"></div>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant italic">Next goal: Reach 3,000 points to unlock "Eco Champion" status.</p>
+</div>
+</div>
+<!-- Badges Card -->
+<div class="glass-card rounded-xl p-md shadow-sm border border-outline-variant flex flex-col gap-sm">
+<h3 class="font-title-lg text-title-lg text-on-surface">Achievements</h3>
+<div class="grid grid-cols-3 gap-sm">
+<!-- Badge 1 -->
+<div class="flex flex-col items-center text-center gap-xs">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-secondary shadow-inner group">
+<span class="material-symbols-outlined text-3xl transition-transform group-hover:scale-110" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">First Report</span>
+<span class="text-[10px] text-on-surface-variant leading-tight">Earned Jan 12</span>
+</div>
+<!-- Badge 2 -->
+<div class="flex flex-col items-center text-center gap-xs">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-secondary shadow-inner group">
+<span class="material-symbols-outlined text-3xl transition-transform group-hover:scale-110" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface">Eco Regular</span>
+<span class="text-[10px] text-on-surface-variant leading-tight">Earned Feb 05</span>
+</div>
+<!-- Badge 3 -->
+<div class="flex flex-col items-center text-center gap-xs">
+<div class="w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center text-outline shadow-inner opacity-60 grayscale">
+<span class="material-symbols-outlined text-3xl" data-icon="workspace_premium" style="font-variation-settings: 'FILL' 0;">workspace_premium</span>
+</div>
+<span class="font-label-md text-label-md text-outline">Eco Champion</span>
+<span class="text-[10px] text-outline leading-tight">Locked</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Leaderboard Table Card -->
+<div class="lg:col-span-7">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h3 class="font-title-lg text-title-lg text-on-surface">Sector 14 Standings</h3>
+<div class="flex gap-xs">
+<button class="px-sm py-xs bg-white border border-outline-variant rounded-lg font-label-md text-label-md flex items-center gap-xs hover:bg-surface-variant">
+<span class="material-symbols-outlined text-sm">filter_list</span> Filter
+                            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-highest border-b border-outline-variant">
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Rank</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Citizen</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Zone</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-center">Reports</th>
+<th class="px-md py-sm font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Points</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<!-- Rank 1 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors group">
+<td class="px-md py-sm">
+<div class="w-8 h-8 rounded-full bg-yellow-400 text-white flex items-center justify-center font-bold text-sm shadow-sm">1</div>
+</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-outline-variant overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="A portrait of an elderly man with a warm smile, wearing spectacles and a neat beige sweater. The photo is high-resolution with soft lighting, suggesting a friendly and wise character. The overall aesthetic is clean and professional, matching a modern corporate UI for an eco-conscious citizen dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl4iZuazQCSDukIGg7fLbvFrTdOGHw7tszmF5q8prrMATxA911ktXPQMYt0F-vpPopBs-cELRd8fpcoml6LJOeAeurNe9ZU7kyBafXApZCWJzks25a-uD-6DX7OuqUwQByyXSH87igE5GbIXPdjfkFkZqMXUbm1Ox06KW6pn0WlxeSV5pV3qkG_U0Ntm6p6bcGzih4QlrxOAAXu3CR4JM7LlYu44s8WrwTTDO9x1e_h4fLtp_EBo3yM0dh1bLVFziHPgy8bKsq6xQ"/>
+</div>
+<span class="font-semibold">Amitav G.</span>
+</div>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">84</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">4,120</td>
+</tr>
+<!-- Rank 2 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors">
+<td class="px-md py-sm">
+<div class="w-8 h-8 rounded-full bg-slate-300 text-white flex items-center justify-center font-bold text-sm shadow-sm">2</div>
+</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-outline-variant overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="A portrait of a young professional woman with her hair tied back, wearing a minimalist white blouse. Her expression is bright and enthusiastic. The background is a crisp white interior with a subtle green houseplant, symbolizing environmental awareness and professional city involvement." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFXO3jDKUCnVhtLTGKuvgVnkSaw77wh5P0hSUc7iOrkSBO1it79Y1MKJ-iFFPjWLBHREDqAmGRO0B1y_jEmaGgYVHJ1TU7osCnYGj01P058-cOjDRTRCjl8RT5ib9tMIq5P9WChGyfnzNIkGCQXVeEFgiY3PT5gynYBAvp_s2Qo9Bm0_5je9efGQajMvJXtfULRsPHKYquWVGjUyRO2ykx1C0UJdR6KDdirdexv_SH9fI0-uRoeNeJFxerTgmj9wFzkHndpVerK3c"/>
+</div>
+<span class="font-semibold">Sneha K.</span>
+</div>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">62</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">3,890</td>
+</tr>
+<!-- Rank 3 (RAJAT - CURRENT USER) -->
+<tr class="bg-secondary-container/30 highlight-accent hover:bg-secondary-container/50 transition-colors">
+<td class="px-md py-sm">
+<div class="w-8 h-8 rounded-full bg-amber-700 text-white flex items-center justify-center font-bold text-sm shadow-sm">3</div>
+</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center overflow-hidden border border-white">
+<img class="object-cover w-full h-full" data-alt="A focused portrait of Rajat for the leaderboard table, showing a friendly young man with dark hair. The image is brightly lit with a clean, light-mode background that emphasizes the emerald and forest green accents of the GreenBin design system. Minimalist and trustworthy visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtaSBBH3bzujq3Dypwt7HvUTX1Q0syBvkrHHgwMEkAI_nE7J5seVyfX0xIQDvcNxNmUSqkPebElXqnGxMeDGcDoGOthfWSXZBKRp9yuMHRJqT0-OwP3x8p1U1cy9IbRz9hsKkGp1kcf193CGrG8kGXW_PdAzXLot15J29A_eYY2rWdVSAKxDZM5YDKUAp-czdou6XVnnIQP2GKbNxtMV9RmUm07z9Hd53dN651y8NphMzwWQb7cwKfW_jLK56M02cEUtVb6qbOytw"/>
+</div>
+<div class="flex items-center gap-xs">
+<span class="font-bold text-secondary">Rajat</span>
+<span class="px-xs py-0.5 bg-secondary text-white text-[10px] rounded-full uppercase">You</span>
+</div>
+</div>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">45</td>
+<td class="px-md py-sm text-right font-mono-data font-bold text-secondary">2,450</td>
+</tr>
+<!-- Row 4 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors">
+<td class="px-md py-sm text-on-surface-variant font-mono-data">4</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-outline-variant overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="A portrait of a man in his late 30s with a cheerful and engaging expression, wearing a casual blue polo shirt. The lighting is soft and consistent with a corporate modern dashboard style. The background is a soft gray that makes the subject stand out clearly." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbKNTrLq2v5x56qdt0PhoIEOkaiVHuUdklYaaANHrQK3WMRiE_3_x2Gj-o3z_hkiaVITXW4xiR9bscKkePnqIJHwx_3lpJKqnNcYXdRm-7DTnq8zGYH1sg556oi7vR9pj0v7FRNYoIM-ciIgk-DuNauOWa8ceFX-1-extshH5mTHVNblI9IaJLFJczfO8Sdc5yveJkg186YpN2nQykN4LhBHKjXQNUIhsJrt1UoPdHjfuFCsy8KyI2MLvpiEZahXVk-mf9DF1mgOU"/>
+</div>
+<span>Rohan M.</span>
+</div>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">41</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">2,210</td>
+</tr>
+<!-- Row 5 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors">
+<td class="px-md py-sm text-on-surface-variant font-mono-data">5</td>
+<td class="px-md py-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-outline-variant overflow-hidden">
+<img class="object-cover w-full h-full" data-alt="A high-quality studio portrait of a woman with short dark hair, wearing a green linen shirt. She has a subtle, confident smile. The photography follows a high-density operational UI style, with clean edges and a soft neutral background to maintain focus on the individual." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS_epNPLCgGyJuc3nZCAaqwGHMApxn_akJyZqbYpqpDzTAVmqpE6_kA9yTmR_ZBBe7mDcMp5E8Bnmat2eXmIINHUE0ewwQAOgEOEAZUAuLfl0iZL4eOfYYwJ8q9BjFCeSgzRy3QpESpG4aJBfyGjj4tFBzeIQifYhe8A0_EDYimRqw5uhRlr1tKCEnn_uBBJklaVX6WR2wIRl_yzzEDpnH2of04rapXaMFEQt8mZ6aju8-2pGRaKFl5fSWXrYrSkjVSGQhRyDOl3s"/>
+</div>
+<span>Priya S.</span>
+</div>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">38</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">1,980</td>
+</tr>
+<!-- Row 6 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors">
+<td class="px-md py-sm text-on-surface-variant font-mono-data">6</td>
+<td class="px-md py-sm">
+<span>Vikram J.</span>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">32</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">1,750</td>
+</tr>
+<!-- Row 7 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors">
+<td class="px-md py-sm text-on-surface-variant font-mono-data">7</td>
+<td class="px-md py-sm">
+<span>Ananya V.</span>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">30</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">1,620</td>
+</tr>
+<!-- Row 8 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors">
+<td class="px-md py-sm text-on-surface-variant font-mono-data">8</td>
+<td class="px-md py-sm">
+<span>Karan D.</span>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">28</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">1,480</td>
+</tr>
+<!-- Row 9 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors">
+<td class="px-md py-sm text-on-surface-variant font-mono-data">9</td>
+<td class="px-md py-sm">
+<span>Meera L.</span>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">22</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">1,240</td>
+</tr>
+<!-- Row 10 -->
+<tr class="zebra-row hover:bg-secondary-fixed-dim transition-colors">
+<td class="px-md py-sm text-on-surface-variant font-mono-data">10</td>
+<td class="px-md py-sm">
+<span>Siddharth P.</span>
+</td>
+<td class="px-md py-sm text-on-surface-variant">Sector 14</td>
+<td class="px-md py-sm text-center">20</td>
+<td class="px-md py-sm text-right font-mono-data text-primary">1,100</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-sm bg-surface-container-low flex justify-center border-t border-outline-variant">
+<button class="font-label-md text-label-md text-primary hover:underline">View Full Leaderboard</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Reward Redemptions (Extra Section for Context) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="bg-primary-container rounded-xl p-md text-on-primary-container flex justify-between items-center overflow-hidden relative group">
+<div class="z-10">
+<h4 class="font-title-lg text-title-lg">Eco-Coupon</h4>
+<p class="font-body-md text-body-md opacity-80">15% off at City Grocery</p>
+<button class="mt-md bg-on-primary-container text-primary px-sm py-xs rounded-full font-label-md hover:bg-secondary-fixed transition-colors">Redeem for 500 pts</button>
+</div>
+<span class="material-symbols-outlined text-[120px] absolute -right-4 -bottom-4 opacity-10 group-hover:rotate-12 transition-transform">shopping_basket</span>
+</div>
+<div class="bg-tertiary-container rounded-xl p-md text-on-tertiary-container flex justify-between items-center overflow-hidden relative group">
+<div class="z-10">
+<h4 class="font-title-lg text-title-lg">Bus Pass</h4>
+<p class="font-body-md text-body-md opacity-80">5 Free Metro Rides</p>
+<button class="mt-md bg-on-tertiary-container text-tertiary px-sm py-xs rounded-full font-label-md hover:bg-tertiary-fixed transition-colors">Redeem for 1000 pts</button>
+</div>
+<span class="material-symbols-outlined text-[120px] absolute -right-4 -bottom-4 opacity-10 group-hover:rotate-12 transition-transform">directions_bus</span>
+</div>
+<div class="bg-secondary-container rounded-xl p-md text-on-secondary-container flex justify-between items-center overflow-hidden relative group">
+<div class="z-10">
+<h4 class="font-title-lg text-title-lg">Tree Sponsor</h4>
+<p class="font-body-md text-body-md opacity-80">Plant a tree in your name</p>
+<button class="mt-md bg-on-secondary-container text-secondary px-sm py-xs rounded-full font-label-md hover:bg-secondary-fixed transition-colors">Redeem for 2000 pts</button>
+</div>
+<span class="material-symbols-outlined text-[120px] absolute -right-4 -bottom-4 opacity-10 group-hover:rotate-12 transition-transform">park</span>
+</div>
+</section>
+</main>
+<footer class="mt-xl py-lg px-margin-desktop border-t border-outline-variant bg-surface flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-xs">
+<span class="font-title-lg text-title-lg font-black text-primary">GreenBin</span>
+<span class="text-on-surface-variant font-body-md">| Smart Waste Solutions</span>
+</div>
+<p class="text-on-surface-variant font-body-md">© 2024 GreenBin. All rights reserved.</p>
+<div class="flex gap-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md uppercase" href="#">Terms</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md uppercase" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md uppercase" href="#">Contact</a>
+</div>
+</footer>
+<script>
+        // Micro-interaction for row hovering
+        document.querySelectorAll('.zebra-row, .highlight-accent').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(4px)';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0px)';
+            });
+            row.style.transition = 'transform 0.2s ease-out, background-color 0.2s ease-out';
+        });
+    </script>
+</body></html>

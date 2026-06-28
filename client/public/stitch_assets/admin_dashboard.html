@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GreenBin Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pulse-critical {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(186, 26, 26, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(186, 26, 26, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(186, 26, 26, 0); }
+        }
+        .pulse-warning {
+            animation: pulse-amber 2s infinite;
+        }
+        @keyframes pulse-amber {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c0c9bf;
+            border-radius: 10px;
+        }
+        .dotted-route {
+            stroke-dasharray: 8, 8;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -1000; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002204",
+                        "tertiary-container": "#782e97",
+                        "tertiary-fixed-dim": "#ecb2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#dde9f9",
+                        "outline-variant": "#c0c9bf",
+                        "on-primary-container": "#90d2a5",
+                        "on-tertiary-container": "#eaaeff",
+                        "inverse-surface": "#26323d",
+                        "secondary-fixed-dim": "#78dc77",
+                        "primary-fixed-dim": "#93d5a7",
+                        "surface-container-low": "#ecf4ff",
+                        "secondary-fixed": "#94f990",
+                        "secondary": "#006e1c",
+                        "surface": "#f7f9ff",
+                        "primary-container": "#1a5c38",
+                        "surface-variant": "#d7e4f3",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#00210f",
+                        "on-tertiary-fixed": "#320047",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#0b522f",
+                        "primary-fixed": "#aef2c2",
+                        "surface-container": "#e3effe",
+                        "on-secondary-container": "#00731e",
+                        "surface-tint": "#2a6a45",
+                        "surface-dim": "#cfdbea",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#d7e4f3",
+                        "outline": "#707971",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#e7f2ff",
+                        "on-surface": "#111d27",
+                        "on-surface-variant": "#404941",
+                        "on-background": "#111d27",
+                        "inverse-primary": "#93d5a7",
+                        "on-secondary-fixed-variant": "#005313",
+                        "background": "#f7f9ff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#6c228c",
+                        "secondary-container": "#91f78e",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#f8d8ff",
+                        "primary": "#004324",
+                        "surface-bright": "#f7f9ff",
+                        "tertiary": "#5e0e7e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "40px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "gutter": "20px",
+                        "margin-mobile": "16px",
+                        "xs": "8px",
+                        "xl": "64px",
+                        "margin-desktop": "32px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "mono-data": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono-data": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen flex flex-col overflow-hidden">
+<!-- Top Navbar -->
+<nav class="bg-primary text-on-primary-fixed h-16 flex items-center justify-between px-margin-desktop shadow-sm z-50">
+<div class="flex items-center gap-md">
+<img alt="GreenBin Logo" class="h-8 w-8 object-contain" src="data:image/png;base64,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"/>
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-primary-fixed">GreenBin Admin</span>
+<div class="h-8 w-px bg-on-primary-fixed-variant opacity-30 mx-base"></div>
+<!-- Zone Selector -->
+<div class="relative">
+<button class="flex items-center gap-xs bg-on-primary-fixed-variant/20 hover:bg-on-primary-fixed-variant/40 px-sm py-xs rounded-xl transition-colors border border-on-primary-fixed-variant/20">
+<span class="font-label-md text-label-md text-primary-fixed">Zone: Central District</span>
+<span class="material-symbols-outlined text-primary-fixed">expand_more</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative group">
+<button class="p-xs rounded-full hover:bg-on-primary-fixed-variant/20 transition-all">
+<span class="material-symbols-outlined text-primary-fixed">notifications</span>
+<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-error rounded-full border-2 border-primary"></span>
+</button>
+</div>
+<div class="flex items-center gap-sm bg-on-primary-fixed-variant/20 pr-sm py-1 pl-1 rounded-full border border-on-primary-fixed-variant/20">
+<div class="h-8 w-8 rounded-full bg-primary-fixed overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a female municipal waste management supervisor, wearing a clean reflective vest over a casual business outfit. She has a confident and friendly expression. The lighting is bright and professional, typical of a corporate modern office environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3KGm994axm-XlguXVcGCQJvDZcU9Z2J6dUm4uOFYruODwKE-3iIWqpG4csuVaE235rWFgVO07SFLDvUY-OYIOT4rE8mHLnUJ4KmGXT9AEsAIWSXMUJhcNwE1thuPOfpSZ6jFcV73EOvwSpI2-leGDa9lOgxRxFkzo0yRj5cOS_TkD1r1UH2V3a7Bd7h0EoGt4HFaQNFPmlMZAJ56oNk_9Gb33YF6S0c1fYLXUI6WFg3nHH3l6AooaZf6Gn-2hnnjuAhaWurccGA8"/>
+</div>
+<span class="font-label-md text-label-md text-primary-fixed">Officer Sarah K.</span>
+</div>
+</div>
+</nav>
+<div class="flex-1 flex overflow-hidden">
+<!-- Side Navigation (Anchored from JSON Logic) -->
+<aside class="w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-md px-sm gap-xs">
+<div class="px-sm mb-md">
+<h2 class="font-title-lg text-title-lg font-black text-primary">Smart Waste</h2>
+<p class="font-label-md text-label-md text-on-surface-variant/70">Operator Portal</p>
+</div>
+<nav class="space-y-xs flex-1">
+<a class="flex items-center gap-sm bg-primary-container text-on-primary-container rounded-xl px-sm py-xs border-l-4 border-primary transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-variant transition-all px-sm py-xs rounded-xl" href="#">
+<span class="material-symbols-outlined">report_problem</span>
+<span class="font-label-md text-label-md">Report Issue</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-variant transition-all px-sm py-xs rounded-xl" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md text-label-md">My Reports</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-variant transition-all px-sm py-xs rounded-xl" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-md text-label-md">Leaderboard</span>
+</a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-variant transition-all px-sm py-xs rounded-xl" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-md text-label-md">Admin Zones</span>
+</a>
+</nav>
+<button class="mt-auto bg-primary text-on-primary font-label-md text-label-md py-sm rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined">add</span>
+                New Report
+            </button>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+<!-- Top KPIs Bar -->
+<div class="grid grid-cols-4 gap-gutter p-gutter">
+<!-- KPI Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 p-sm shadow-sm flex items-center gap-md">
+<div class="h-12 w-12 rounded-lg bg-surface-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">delete_sweep</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Total Bins</p>
+<p class="font-headline-md text-headline-md font-bold text-on-surface">48</p>
+</div>
+</div>
+<!-- KPI Card 2 -->
+<div class="bg-error-container rounded-xl border border-error/20 p-sm shadow-sm flex items-center gap-md">
+<div class="h-12 w-12 rounded-lg bg-error flex items-center justify-center text-on-error pulse-critical">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-error-container">Critical Bins</p>
+<p class="font-headline-md text-headline-md font-bold text-on-error-container">6</p>
+</div>
+</div>
+<!-- KPI Card 3 -->
+<div class="bg-tertiary-fixed rounded-xl border border-tertiary-container/20 p-sm shadow-sm flex items-center gap-md">
+<div class="h-12 w-12 rounded-lg bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">air_freshener</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-tertiary-fixed-variant">Smell Reports</p>
+<p class="font-headline-md text-headline-md font-bold text-on-tertiary-fixed-variant">3</p>
+</div>
+</div>
+<!-- KPI Card 4 -->
+<div class="bg-secondary-container rounded-xl border border-secondary/20 p-sm shadow-sm flex items-center gap-md">
+<div class="h-12 w-12 rounded-lg bg-secondary flex items-center justify-center text-on-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-secondary-container">Collected Today</p>
+<p class="font-headline-md text-headline-md font-bold text-on-secondary-container">14</p>
+</div>
+</div>
+</div>
+<!-- Dashboard Core -->
+<div class="flex flex-1 px-gutter pb-gutter gap-gutter overflow-hidden">
+<!-- Left Section: Interactive Map (60%) -->
+<section class="flex-[3] relative rounded-xl overflow-hidden border border-outline-variant shadow-sm bg-surface-variant/20">
+<!-- Map Mockup Background -->
+<div class="absolute inset-0 z-0 bg-cover bg-center" data-alt="A sophisticated digital satellite map view of a clean, green urban city center with modern street layouts and park areas. The map features specialized overlays like subtle green heat zones and vector-style dotted lines connecting various points, reflecting an advanced IoT logistics system. The lighting is bright and clear." data-location="San Francisco" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCweUBg_EeHa_o7AvYMblQ3B_PjNlr0MwMVRvdWyh7bfYLKh9YrRJC2xuMmNjCjFGpwpLKrl60siiVzgx2tsUN8itqzicrnUpf8dfW-WDqKoNw4Gsj22dZI5Rs9uezDSMQiCy0K6bnYGQKhdCBViPzR4B2atiN2rCmuyEOK38tciKjTI9TK0tD5p9-HskY2c3ok_PAKLKwEKoXdQL7f_eXdo-ivLhmdSdY1UObfGx1T88fLp-kdyKuKo1O4tmSobiePJ8i-lyvdiKs')">
+<!-- Simulated Overlay Layers -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" viewbox="0 0 800 600">
+<!-- Optimized Route Line -->
+<path class="dotted-route opacity-60" d="M 100 100 Q 250 50 400 300 T 700 500" fill="none" stroke="#006e1c" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<!-- Interactive Pins -->
+<!-- Critical Bin Pin -->
+<div class="absolute top-[100px] left-[100px] -translate-x-1/2 -translate-y-1/2 group">
+<div class="w-8 h-8 bg-error border-2 border-white rounded-full flex items-center justify-center text-white pulse-critical cursor-pointer transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</div>
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-surface-container-highest px-sm py-xs rounded border border-outline shadow-lg min-w-[120px]">
+<p class="font-label-md text-label-md font-bold">Bin #402</p>
+<p class="text-[10px] text-error">98% Fill • Critical</p>
+</div>
+</div>
+<!-- Truck Icon -->
+<div class="absolute top-[300px] left-[400px] -translate-x-1/2 -translate-y-1/2 group">
+<div class="w-10 h-10 bg-[#005ea2] border-2 border-white rounded-lg flex items-center justify-center text-white shadow-lg cursor-pointer">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+</div>
+<!-- Healthy Bin -->
+<div class="absolute top-[450px] left-[200px] -translate-x-1/2 -translate-y-1/2">
+<div class="w-6 h-6 bg-secondary border-2 border-white rounded-full flex items-center justify-center text-white shadow-sm opacity-80"></div>
+</div>
+<!-- Smell Report Pin -->
+<div class="absolute top-[200px] left-[600px] -translate-x-1/2 -translate-y-1/2">
+<div class="w-8 h-8 bg-tertiary-container border-2 border-white rounded-full flex items-center justify-center text-white shadow-md">
+<span class="material-symbols-outlined text-[18px]">air_freshener</span>
+</div>
+</div>
+</div>
+<!-- Map UI Overlays -->
+<div class="absolute top-sm right-sm flex flex-col gap-xs">
+<div class="bg-surface/90 backdrop-blur-sm p-xs rounded-xl shadow-lg border border-outline-variant flex flex-col gap-xs">
+<button class="p-xs hover:bg-surface-variant rounded-lg transition-colors text-on-surface-variant flex items-center gap-xs pr-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">layers</span>
+<span class="font-label-md">Toggles</span>
+</button>
+<hr class="border-outline-variant/50"/>
+<label class="flex items-center gap-sm px-xs py-1 cursor-pointer">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface-variant">Bins</span>
+</label>
+<label class="flex items-center gap-sm px-xs py-1 cursor-pointer">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface-variant">Routes</span>
+</label>
+<label class="flex items-center gap-sm px-xs py-1 cursor-pointer">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface-variant">Heatmap</span>
+</label>
+</div>
+<div class="bg-surface/90 backdrop-blur-sm p-xs rounded-xl shadow-lg border border-outline-variant flex flex-col">
+<button class="p-xs hover:bg-surface-variant rounded-lg text-on-surface-variant"><span class="material-symbols-outlined">add</span></button>
+<button class="p-xs hover:bg-surface-variant rounded-lg text-on-surface-variant"><span class="material-symbols-outlined">remove</span></button>
+</div>
+</div>
+<div class="absolute bottom-sm left-sm bg-surface/90 backdrop-blur-sm px-sm py-xs rounded-full shadow-lg border border-outline-variant flex items-center gap-sm">
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="text-[10px] font-bold">Optimal</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-error"></span>
+<span class="text-[10px] font-bold">Critical</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-tertiary-container"></span>
+<span class="text-[10px] font-bold">Reported</span>
+</div>
+</div>
+</section>
+<!-- Right Section: Action Panel (40%) -->
+<section class="flex-[2] flex flex-col gap-gutter overflow-hidden h-full">
+<!-- Pending Reports List -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 flex flex-col overflow-hidden max-h-[35%] shadow-sm">
+<div class="px-sm py-xs bg-surface-container-high flex justify-between items-center border-b border-outline-variant/20">
+<h3 class="font-label-md text-label-md font-bold text-primary flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">forum</span>
+                                Pending Reports
+                            </h3>
+<span class="bg-tertiary text-on-tertiary px-2 py-0.5 rounded-full text-[10px] font-bold">3 NEW</span>
+</div>
+<div class="overflow-y-auto custom-scrollbar p-xs space-y-xs">
+<!-- Report Item -->
+<div class="p-sm rounded-lg bg-surface hover:bg-surface-variant/30 border border-outline-variant/10 transition-colors flex justify-between items-center group">
+<div class="flex gap-sm">
+<span class="material-symbols-outlined text-tertiary-container">air_freshener</span>
+<div>
+<p class="font-label-md text-label-md font-bold">Bin #12 - Smell Report</p>
+<p class="text-[11px] text-on-surface-variant">Oak St 42 • 12m ago</p>
+</div>
+</div>
+<button class="bg-primary text-on-primary text-[10px] px-sm py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">Assign</button>
+</div>
+<div class="p-sm rounded-lg bg-surface hover:bg-surface-variant/30 border border-outline-variant/10 transition-colors flex justify-between items-center group">
+<div class="flex gap-sm">
+<span class="material-symbols-outlined text-error">garage</span>
+<div>
+<p class="font-label-md text-label-md font-bold">Bin #89 - Lid Broken</p>
+<p class="text-[11px] text-on-surface-variant">Pine Plaza • 1h ago</p>
+</div>
+</div>
+<button class="bg-primary text-on-primary text-[10px] px-sm py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">Assign</button>
+</div>
+</div>
+</div>
+<!-- Critical Bins Queue -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 flex flex-col overflow-hidden max-h-[35%] shadow-sm">
+<div class="px-sm py-xs bg-error-container/30 flex justify-between items-center border-b border-error/10">
+<h3 class="font-label-md text-label-md font-bold text-error flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+                                Critical Bins (90%+)
+                            </h3>
+<button class="text-error font-bold text-[10px] uppercase hover:underline">Route All</button>
+</div>
+<div class="overflow-y-auto custom-scrollbar p-xs space-y-xs">
+<div class="flex flex-col gap-xs p-sm bg-surface border-l-4 border-error rounded-r-lg shadow-sm">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md font-bold">Bin #402 — North Terminal</span>
+<span class="text-error font-black">98%</span>
+</div>
+<div class="w-full bg-outline-variant/20 h-1.5 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 98%"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">history</span>
+                                    Full for 4 hours
+                                </p>
+</div>
+<div class="flex flex-col gap-xs p-sm bg-surface border-l-4 border-error rounded-r-lg shadow-sm">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md font-bold">Bin #118 — South Park</span>
+<span class="text-error font-black">92%</span>
+</div>
+<div class="w-full bg-outline-variant/20 h-1.5 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 92%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Weekly Collection Bar Chart -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 flex flex-col flex-1 p-sm shadow-sm overflow-hidden">
+<div class="mb-sm">
+<h3 class="font-label-md text-label-md font-bold text-on-surface">Weekly Collections</h3>
+<p class="text-[10px] text-on-surface-variant">Avg: 18.4 tons / day</p>
+</div>
+<div class="flex-1 flex items-end justify-between gap-base px-xs pb-xs">
+<!-- Mon -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-secondary/20 hover:bg-secondary/40 rounded-t-md transition-all relative group" style="height: 60%">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">15t</span>
+</div>
+<span class="text-[10px] text-on-surface-variant">M</span>
+</div>
+<!-- Tue -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-secondary/20 hover:bg-secondary/40 rounded-t-md transition-all relative group" style="height: 80%">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">20t</span>
+</div>
+<span class="text-[10px] text-on-surface-variant">T</span>
+</div>
+<!-- Wed -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-secondary/60 rounded-t-md relative group" style="height: 95%">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold opacity-100">24t</span>
+</div>
+<span class="text-[10px] text-primary font-bold">W</span>
+</div>
+<!-- Thu -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-secondary/20 hover:bg-secondary/40 rounded-t-md transition-all relative group" style="height: 70%"></div>
+<span class="text-[10px] text-on-surface-variant">T</span>
+</div>
+<!-- Fri -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-secondary/20 hover:bg-secondary/40 rounded-t-md transition-all relative group" style="height: 85%"></div>
+<span class="text-[10px] text-on-surface-variant">F</span>
+</div>
+<!-- Sat -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-secondary/10 hover:bg-secondary/20 rounded-t-md transition-all relative group" style="height: 40%"></div>
+<span class="text-[10px] text-on-surface-variant">S</span>
+</div>
+<!-- Sun -->
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full bg-secondary/10 hover:bg-secondary/20 rounded-t-md transition-all relative group" style="height: 30%"></div>
+<span class="text-[10px] text-on-surface-variant">S</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple interactive layer toggle logic simulation
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const layer = this.nextElementSibling.textContent.toLowerCase();
+                console.log(`Toggling map layer: ${layer}`);
+                // In a real app, this would hide/show SVG elements or map data
+            });
+        });
+    </script>
+</body></html>
