@@ -1,7 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
+  const { user, logout } = useAuth();
+
+  const getDashboardPath = () => {
+    if (!user) return '/citizen';
+    if (user.role === 'admin') return '/admin';
+    if (user.role === 'staff') return '/staff/route';
+    return '/citizen';
+  };
+
   return (
     <div className="bg-background text-on-background min-h-screen">
       {/* Top Navigation Bar */}
@@ -17,14 +27,36 @@ const Home = () => {
         <nav className="hidden md:flex items-center gap-lg">
           <a className="font-body-md text-body-md text-primary font-semibold border-b-2 border-primary pb-1" href="#home">Home</a>
           <a className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#how-it-works">How It Works</a>
-          <Link className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" to="/login">Login</Link>
+          {user ? (
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" to={getDashboardPath()}>
+              Dashboard
+            </Link>
+          ) : (
+            <Link className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" to="/login">
+              Login
+            </Link>
+          )}
         </nav>
-        <Link 
-          to="/login"
-          className="bg-primary text-white px-md py-xs rounded-full font-label-md text-label-md hover:bg-opacity-90 active:scale-95 transition-all"
-        >
-          Sign In
-        </Link>
+        {user ? (
+          <div className="flex items-center gap-xs">
+            <span className="hidden sm:inline-block text-xs bg-primary/10 text-primary px-sm py-xs rounded-full font-bold">
+              {user.name || user.email} ({user.role?.toUpperCase()})
+            </span>
+            <button 
+              onClick={logout}
+              className="bg-surface border border-outline-variant text-on-surface px-md py-xs rounded-full font-label-md text-label-md hover:bg-surface-container active:scale-95 transition-all"
+            >
+              Sign Out
+            </button>
+          </div>
+        ) : (
+          <Link 
+            to="/login"
+            className="bg-primary text-white px-md py-xs rounded-full font-label-md text-label-md hover:bg-opacity-90 active:scale-95 transition-all"
+          >
+            Sign In
+          </Link>
+        )}
       </header>
 
       {/* Main Content */}
