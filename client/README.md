@@ -1,5 +1,13 @@
 # React + Vite
 
+<!-- This README is based on the Vite React template and can be customized for GreenBin. -->
+<!-- Use this project for the client-side app only; the server lives in ../server. -->
+<!-- Run npm install before starting development. -->
+<!-- npm run dev starts the Vite dev server with hot reload. -->
+<!-- npm run build creates the production bundle for deployment. -->
+<!-- Do not edit package-lock.json manually; use npm install or npm update. -->
+<!-- Oxlint is configured for linting, but TypeScript support is not enabled in this template. -->
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:
