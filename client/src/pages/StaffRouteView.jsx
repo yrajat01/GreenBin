@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import { initiateSocketConnection, disconnectSocket } from '../services/socket';
+import MapComponent from '../components/MapComponent';
 
 const StaffRouteView = () => {
   const { logout } = useAuth();
@@ -237,14 +238,12 @@ const StaffRouteView = () => {
               </div>
             )}
 
-            {/* Decorative Map Context */}
-            <div className="w-full h-32 rounded-xl overflow-hidden relative border border-outline-variant mt-xs bg-surface-variant/20 flex items-center justify-center">
-              <img src="/stitch_assets/landscape.png" className="w-full h-full object-cover opacity-60" alt="Driving Map View" />
-              <div className="absolute inset-0 bg-primary/10"></div>
-              <div className="absolute bottom-2 left-2 flex items-center gap-xs bg-white/90 backdrop-blur-sm p-1.5 rounded-lg border border-outline-variant z-10">
-                <span className="material-symbols-outlined text-primary text-sm">near_me</span>
-                <span className="text-[10px] font-bold text-primary">0.8km to next bin</span>
-              </div>
+            {/* Interactive Live Driving Map */}
+            <div className="w-full h-56 rounded-xl overflow-hidden relative border border-outline-variant mt-xs bg-surface-variant/20 shadow-sm shrink-0">
+              <MapComponent 
+                bins={routeBins} 
+                routePath={routeBins} 
+              />
             </div>
 
           </main>

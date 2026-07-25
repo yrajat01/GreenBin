@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -13,6 +13,78 @@ L.Icon.Default.mergeOptions({
 
 // Depot Coordinate
 const DEPOT_COORDS = [26.8467, 80.9462];
+
+// Component to dynamically fit map view to route bounds
+const FitBoundsToRoute = ({ coords }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (coords && coords.length > 0) {
+      const bounds = L.latLngBounds(coords);
+      map.fitBounds(bounds, { padding: [50, 50] });
+    }
+  }, [coords, map]);
+  return null;
+};
+
+// Calculate bearing/angle in degrees between two lat/lng points
+const getBearing = (startLat, startLng, endLat, endLng) => {
+  const startLatRad = (startLat * Math.PI) / 180;
+  const startLngRad = (startLng * Math.PI) / 180;
+  const endLatRad = (endLat * Math.PI) / 180;
+  const endLngRad = (endLng * Math.PI) / 180;
+
+  const dLng = endLngRad - startLngRad;
+  const y = Math.sin(dLng) * Math.cos(endLatRad);
+  const x =
+    Math.cos(startLatRad) * Math.sin(endLatRad) -
+    Math.sin(startLatRad) * Math.cos(endLatRad) * Math.cos(dLng);
+
+  let brng = (Math.atan2(y, x) * 180) / Math.PI;
+  return (brng + 360) % 360;
+};
+
+// Helper to create single truck active direction arrow icon
+const createSingleTruckArrowIcon = (angle) => {
+  const html = `
+    <div class="relative flex items-center justify-center">
+      <div class="absolute w-8 h-8 rounded-full bg-[#15803d]/30 animate-ping"></div>
+      <div class="w-8 h-8 rounded-full bg-[#15803d] border-2 border-white shadow-xl flex items-center justify-center text-white z-10 transition-transform hover:scale-110">
+        <div style="transform: rotate(${angle}deg); display: flex; items-center; justify-content: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff">
+            <path d="M12 2L21 21L12 17L3 21L12 2Z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  `;
+  return L.divIcon({
+    html,
+    className: 'single-truck-direction-arrow',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16]
+  });
+};
+
+// Helper to create START route badge
+const createStartBadgeIcon = (angle) => {
+  const html = `
+    <div class="flex items-center gap-1 bg-[#15803d] text-white px-2 py-0.5 rounded-full shadow-lg border border-white text-[10px] font-bold tracking-tight whitespace-nowrap">
+      <span>START</span>
+      <div style="transform: rotate(${angle}deg); display: inline-flex;">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="#ffffff">
+          <path d="M12 2L21 21L12 17L3 21L12 2Z" />
+        </svg>
+      </div>
+    </div>
+  `;
+  return L.divIcon({
+    html,
+    className: 'route-start-badge',
+    iconSize: [60, 22],
+    iconAnchor: [30, 26]
+  });
+};
 
 // Helper to create custom HTML/Tailwind Leaflet icons
 const createCustomIcon = (status, fillLevel) => {
@@ -63,12 +135,76 @@ const createDepotIcon = () => {
 };
 
 const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, routePath = [] }) => {
-  // If a selected bin changes, zoom to it (can be added later using map events)
-  
-  // Construct route coordinates
-  const polylineCoords = routePath.length > 0 
-    ? [DEPOT_COORDS, ...routePath.map(bin => [bin.location.lat, bin.location.lng]), DEPOT_COORDS]
-    : [];
+  const [roadCoordinates, setRoadCoordinates] = useState([]);
+
+  // Fetch actual turn-by-turn road geometry from OSRM Routing Engine
+  useEffect(() => {
+    if (!routePath || routePath.length === 0) {
+      setRoadCoordinates([]);
+      return;
+    }
+
+    // Waypoints in [lng, lat] format for OSRM: Depot -> Bins -> Depot
+    const waypoints = [
+      [DEPOT_COORDS[1], DEPOT_COORDS[0]],
+      ...routePath.map(bin => [bin.location.lng, bin.location.lat]),
+      [DEPOT_COORDS[1], DEPOT_COORDS[0]]
+    ];
+
+    const coordsStr = waypoints.map(pt => `${pt[0]},${pt[1]}`).join(';');
+    const url = `https://router.project-osrm.org/route/v1/driving/${coordsStr}?overview=full&geometries=geojson`;
+
+    let active = true;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if (!active) return;
+        if (data.code === 'Ok' && data.routes && data.routes[0]?.geometry?.coordinates) {
+          // Convert GeoJSON [lng, lat] to Leaflet [lat, lng]
+          const leafletCoords = data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+          setRoadCoordinates(leafletCoords);
+        } else {
+          // Fallback straight lines
+          setRoadCoordinates([DEPOT_COORDS, ...routePath.map(b => [b.location.lat, b.location.lng]), DEPOT_COORDS]);
+        }
+      })
+      .catch(err => {
+        console.warn('OSRM road routing query failed, falling back to straight lines:', err);
+        if (active) {
+          setRoadCoordinates([DEPOT_COORDS, ...routePath.map(b => [b.location.lat, b.location.lng]), DEPOT_COORDS]);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [routePath]);
+
+  // Calculate single truck direction arrow along the recently followed road leg
+  const singleTruckArrow = React.useMemo(() => {
+    if (!roadCoordinates || roadCoordinates.length < 2) return null;
+
+    // Place the single arrow on the active road segment (~15% along the route)
+    const targetIndex = Math.min(6, Math.floor(roadCoordinates.length * 0.15));
+    const p1 = roadCoordinates[targetIndex];
+    const p2 = roadCoordinates[Math.min(targetIndex + 2, roadCoordinates.length - 1)];
+
+    if (p1 && p2) {
+      const angle = getBearing(p1[0], p1[1], p2[0], p2[1]);
+      return { position: p1, angle };
+    }
+    return null;
+  }, [roadCoordinates]);
+
+  // Calculate start direction angle
+  const startAngle = React.useMemo(() => {
+    if (!roadCoordinates || roadCoordinates.length < 2) return 0;
+    return getBearing(
+      roadCoordinates[0][0], roadCoordinates[0][1],
+      roadCoordinates[1][0], roadCoordinates[1][1]
+    );
+  }, [roadCoordinates]);
 
   return (
     <MapContainer 
@@ -144,15 +280,45 @@ const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, route
         </Marker>
       ))}
 
-      {/* Render Route Polyline Path */}
-      {polylineCoords.length > 0 && (
-        <Polyline 
-          positions={polylineCoords} 
-          pathOptions={{ color: '#006e1c', weight: 4, dashArray: '8, 8', className: 'dotted-route' }} 
-        />
+      {/* Render Google Maps Style Dedicated Road Route */}
+      {roadCoordinates.length > 0 && (
+        <>
+          {/* Subtle Casing Outline */}
+          <Polyline 
+            positions={roadCoordinates} 
+            pathOptions={{ color: '#064e3b', weight: 4.5, opacity: 0.25 }} 
+          />
+          {/* Main Thin Green Route Line (Google Maps Directions Style) */}
+          <Polyline 
+            positions={roadCoordinates} 
+            pathOptions={{ color: '#15803d', weight: 2.5, opacity: 0.95 }} 
+          />
+
+          {/* Start Direction Badge Indicator */}
+          <Marker 
+            position={roadCoordinates[0]} 
+            icon={createStartBadgeIcon(startAngle)} 
+            interactive={false} 
+          />
+
+          {/* Single Truck Active Direction Arrow */}
+          {singleTruckArrow && (
+            <Marker 
+              position={singleTruckArrow.position} 
+              icon={createSingleTruckArrowIcon(singleTruckArrow.angle)} 
+              interactive={false} 
+            />
+          )}
+
+          {/* Auto-fit map viewport to active road route */}
+          <FitBoundsToRoute coords={roadCoordinates} />
+        </>
       )}
     </MapContainer>
   );
 };
 
 export default MapComponent;
+
+
+
