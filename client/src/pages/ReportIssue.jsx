@@ -74,9 +74,16 @@ const ReportIssue = () => {
       
       {/* Sidebar Navigation */}
       <aside className="hidden md:flex flex-col h-screen left-0 w-64 bg-surface-container-low border-r border-outline-variant py-md px-sm gap-xs shrink-0">
-        <Link to="/" className="flex flex-col gap-base mb-lg px-sm hover:opacity-85 transition-opacity">
-          <span className="font-title-lg text-title-lg font-black text-primary">Smart Waste</span>
-          <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Operator Portal</span>
+        <Link to="/" className="flex items-center gap-sm mb-lg px-xs hover:opacity-90">
+          <svg className="h-10 w-10 text-primary" viewBox="0 0 30 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2L4.5 9C4.5 9 3 11.5 3 15C3 18.5 5.5 21 9 21C11.5 21 13.5 19.5 15 17.5C16.5 19.5 18.5 21 21 21C24.5 21 27 18.5 27 15C27 11.5 25.5 9 25.5 9L18 2" />
+            <path d="M12 2C12 2 13.5 4.5 13.5 8C13.5 11.5 12 14 12 14" stroke="#4CAF50" />
+            <path d="M12 22V14" />
+          </svg>
+          <div className="flex flex-col text-left text-primary font-bold">
+            <span className="font-title-lg text-title-lg font-black text-primary">GreenBin</span>
+            <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Citizen App</span>
+          </div>
         </Link>
         <nav className="flex flex-col gap-xs flex-1">
           <Link className="flex items-center gap-sm text-on-surface-variant px-sm py-xs hover:bg-surface-variant transition-all rounded-xl" to="/citizen">
@@ -99,6 +106,17 @@ const ReportIssue = () => {
             <span className="font-label-md text-label-md">Logout</span>
           </button>
         </nav>
+
+        {/* User Info Anchor */}
+        <div className="mt-auto p-sm bg-surface-container rounded-xl flex items-center gap-sm border border-outline-variant/30">
+          <div className="w-10 h-10 rounded-full border-2 border-primary overflow-hidden bg-surface-variant flex items-center justify-center text-white font-bold bg-primary text-lg">
+            {user?.name?.charAt(0).toUpperCase() || 'C'}
+          </div>
+          <div className="flex flex-col text-left">
+            <span className="font-label-md text-label-md text-on-surface font-bold">{user?.name || 'Citizen'}</span>
+            <span className="font-mono-data text-mono-data text-primary font-bold">{user?.points || 0} pts 🌿</span>
+          </div>
+        </div>
       </aside>
 
       {/* Main Content Canvas */}
