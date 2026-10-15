@@ -13,6 +13,7 @@ L.Icon.Default.mergeOptions({
 
 // Depot Coordinate
 const DEPOT_COORDS = [26.8467, 80.9462];
+const EMPTY_ROUTE_PATH = [];
 
 // Component to dynamically fit map view to route bounds
 const FitBoundsToRoute = ({ coords }) => {
@@ -134,13 +135,15 @@ const createDepotIcon = () => {
   });
 };
 
-const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, routePath = [] }) => {
+const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, routePath = EMPTY_ROUTE_PATH }) => {
   const [roadCoordinates, setRoadCoordinates] = useState([]);
+
+  const routePathKey = (routePath || []).map(bin => bin.binId || bin._id).join(',');
 
   // Fetch actual turn-by-turn road geometry from OSRM Routing Engine
   useEffect(() => {
     if (!routePath || routePath.length === 0) {
-      setRoadCoordinates([]);
+      setRoadCoordinates(prev => (prev.length === 0 ? prev : []));
       return;
     }
 
@@ -179,7 +182,7 @@ const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, route
     return () => {
       active = false;
     };
-  }, [routePath]);
+  }, [routePathKey]);
 
   // Calculate single truck direction arrow along the recently followed road leg
   const singleTruckArrow = React.useMemo(() => {
