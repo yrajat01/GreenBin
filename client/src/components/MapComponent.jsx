@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -16,15 +16,194 @@ const DEPOT_COORDS = [26.8467, 80.9462];
 const EMPTY_ROUTE_PATH = [];
 
 // Component to dynamically fit map view to route bounds
-const FitBoundsToRoute = ({ coords }) => {
+const FitBoundsToRoute = ({ coords, enabled = true }) => {
   const map = useMap();
   useEffect(() => {
-    if (coords && coords.length > 0) {
+    if (enabled && coords && coords.length > 0) {
       const bounds = L.latLngBounds(coords);
       map.fitBounds(bounds, { padding: [50, 50] });
     }
-  }, [coords, map]);
+  }, [coords, enabled, map]);
   return null;
+};
+
+// Component to dynamically center map on selected bin
+const CenterMapOnSelected = ({ selectedBin }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (selectedBin && selectedBin.location?.lat && selectedBin.location?.lng) {
+      map.setView([selectedBin.location.lat, selectedBin.location.lng], 16, { animate: true });
+    }
+  }, [selectedBin, map]);
+  return null;
+};
+
+// Two-Finger Gesture Handler:
+// - Sliding with two fingers moves/pans the map along.
+// - Pinching in and pinching out zooms out and zooms in.
+const TwoFingerGestureHandler = () => {
+  const map = useMap();
+  const touchRef = useRef({
+    active: false,
+    startDist: 0,
+    startZoom: 14,
+    lastMid: { x: 0, y: 0 },
+  });
+
+  useEffect(() => {
+    const container = map.getContainer();
+    if (!container) return;
+
+    // 1. Touchpad & Wheel (Laptop 2-Finger Slide vs Pinch)
+    const handleWheel = (e) => {
+      e.preventDefault();
+
+      if (e.ctrlKey) {
+        // Pinch-in / Pinch-out on trackpad (browser sets ctrlKey: true for trackpad pinch)
+        const zoomDelta = -e.deltaY * 0.015;
+        const currentZoom = map.getZoom();
+        const minZ = map.getMinZoom() || 2;
+        const maxZ = map.getMaxZoom() || 19;
+        const newZoom = Math.min(maxZ, Math.max(minZ, currentZoom + zoomDelta));
+        map.setZoom(newZoom);
+      } else {
+        // Two-finger slide on trackpad: PAN / SLIDE THE MAP ALONG
+        map.panBy([e.deltaX, e.deltaY], { animate: false });
+      }
+    };
+
+    // 2. Touchscreen 2-Finger Gestures (Tablets & Phones)
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        if (map.dragging && map.dragging.enabled()) {
+          map.dragging.disable();
+        }
+
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        const dist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        const midX = (t1.clientX + t2.clientX) / 2;
+        const midY = (t1.clientY + t2.clientY) / 2;
+
+        touchRef.current = {
+          active: true,
+          startDist: dist,
+          startZoom: map.getZoom(),
+          lastMid: { x: midX, y: midY },
+        };
+      } else {
+        touchRef.current.active = false;
+        if (map.dragging && !map.dragging.enabled()) {
+          map.dragging.enable();
+        }
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 2 && touchRef.current.active) {
+        e.preventDefault();
+
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        const currentDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+        const currentMidX = (t1.clientX + t2.clientX) / 2;
+        const currentMidY = (t1.clientY + t2.clientY) / 2;
+
+        // Two-finger sliding movement: pan the map along
+        const dx = touchRef.current.lastMid.x - currentMidX;
+        const dy = touchRef.current.lastMid.y - currentMidY;
+
+        if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+          map.panBy([dx, dy], { animate: false });
+        }
+
+        // Pinch gesture: zoom if distance between two fingers changes
+        const distChange = Math.abs(currentDist - touchRef.current.startDist);
+        if (distChange > 10 && touchRef.current.startDist > 0) {
+          const scale = currentDist / touchRef.current.startDist;
+          const zoomChange = Math.log2(scale);
+          const minZ = map.getMinZoom() || 2;
+          const maxZ = map.getMaxZoom() || 19;
+          const newZoom = Math.min(maxZ, Math.max(minZ, touchRef.current.startZoom + zoomChange));
+          map.setZoom(newZoom);
+        }
+
+        touchRef.current.lastMid = { x: currentMidX, y: currentMidY };
+      }
+    };
+
+    const handleTouchEnd = (e) => {
+      if (e.touches.length < 2) {
+        touchRef.current.active = false;
+        if (map.dragging && !map.dragging.enabled()) {
+          map.dragging.enable();
+        }
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: false });
+    container.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchcancel', handleTouchEnd);
+    };
+  }, [map]);
+
+  return null;
+};
+
+// Controller that pans map camera smoothly to follow truck position (Google Maps style)
+const FollowTruckController = ({ truckPos, isFollowing, onMapDrag }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const handleDragStart = () => {
+      if (onMapDrag) onMapDrag();
+    };
+    map.on('dragstart', handleDragStart);
+    return () => {
+      map.off('dragstart', handleDragStart);
+    };
+  }, [map, onMapDrag]);
+
+  useEffect(() => {
+    if (isFollowing && truckPos && truckPos.length === 2) {
+      map.setView(truckPos, Math.max(map.getZoom(), 16), { animate: true, duration: 0.8 });
+    }
+  }, [truckPos, isFollowing, map]);
+
+  return null;
+};
+
+// Google Maps style navigation vehicle puck icon with heading direction arrow
+const createNavigationPuckIcon = (angle = 0) => {
+  const html = `
+    <div class="relative flex items-center justify-center">
+      <div class="absolute w-12 h-12 rounded-full bg-[#1a73e8]/30 animate-ping"></div>
+      <div class="absolute w-10 h-10 rounded-full bg-[#1a73e8]/20"></div>
+      <div class="w-9 h-9 rounded-full bg-[#1a73e8] border-2 border-white shadow-2xl flex items-center justify-center text-white z-20">
+        <div style="transform: rotate(${angle}deg); display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff">
+            <path d="M12 2L21 21L12 17L3 21L12 2Z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  `;
+  return L.divIcon({
+    html,
+    className: 'navigation-truck-puck',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    popupAnchor: [0, -20]
+  });
 };
 
 // Calculate bearing/angle in degrees between two lat/lng points
@@ -135,7 +314,17 @@ const createDepotIcon = () => {
   });
 };
 
-const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, routePath = EMPTY_ROUTE_PATH }) => {
+const MapComponent = ({ 
+  bins = [], 
+  selectedBin = null, 
+  onBinSelect = null, 
+  routePath = EMPTY_ROUTE_PATH,
+  truckPosition = null,
+  truckAngle = 0,
+  isFollowing = false,
+  onMapDrag = null,
+  onRoadCoordinatesLoaded = null
+}) => {
   const [roadCoordinates, setRoadCoordinates] = useState([]);
 
   const routePathKey = (routePath || []).map(bin => bin.binId || bin._id).join(',');
@@ -167,15 +356,26 @@ const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, route
           // Convert GeoJSON [lng, lat] to Leaflet [lat, lng]
           const leafletCoords = data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
           setRoadCoordinates(leafletCoords);
+          if (onRoadCoordinatesLoaded) {
+            onRoadCoordinatesLoaded(leafletCoords);
+          }
         } else {
           // Fallback straight lines
-          setRoadCoordinates([DEPOT_COORDS, ...routePath.map(b => [b.location.lat, b.location.lng]), DEPOT_COORDS]);
+          const fallback = [DEPOT_COORDS, ...routePath.map(b => [b.location.lat, b.location.lng]), DEPOT_COORDS];
+          setRoadCoordinates(fallback);
+          if (onRoadCoordinatesLoaded) {
+            onRoadCoordinatesLoaded(fallback);
+          }
         }
       })
       .catch(err => {
         console.warn('OSRM road routing query failed, falling back to straight lines:', err);
         if (active) {
-          setRoadCoordinates([DEPOT_COORDS, ...routePath.map(b => [b.location.lat, b.location.lng]), DEPOT_COORDS]);
+          const fallback = [DEPOT_COORDS, ...routePath.map(b => [b.location.lat, b.location.lng]), DEPOT_COORDS];
+          setRoadCoordinates(fallback);
+          if (onRoadCoordinatesLoaded) {
+            onRoadCoordinatesLoaded(fallback);
+          }
         }
       });
 
@@ -214,12 +414,39 @@ const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, route
       center={DEPOT_COORDS} 
       zoom={14} 
       className="w-full h-full rounded-xl overflow-hidden shadow-sm"
-      scrollWheelZoom={true}
+      scrollWheelZoom={false}
+      touchZoom={false}
+      zoomSnap={0.25}
+      zoomDelta={0.5}
+      dragging={true}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
+      {/* Two-finger sliding (pan) & pinch (zoom) handler for all logins */}
+      <TwoFingerGestureHandler />
+      
+      {/* Dynamic View Controller */}
+      <CenterMapOnSelected selectedBin={selectedBin} />
+
+      {/* Google Maps Real-Time Follow Truck Controller */}
+      <FollowTruckController 
+        truckPos={truckPosition} 
+        isFollowing={isFollowing} 
+        onMapDrag={onMapDrag} 
+      />
+      
+      {/* Real-Time Following Navigation Puck (Google Maps Navigation Arrow) */}
+      {truckPosition && (
+        <Marker
+          position={truckPosition}
+          icon={createNavigationPuckIcon(truckAngle)}
+          zIndexOffset={1000}
+          interactive={false}
+        />
+      )}
       
       {/* Depot Marker */}
       <Marker position={DEPOT_COORDS} icon={createDepotIcon()}>
@@ -304,8 +531,8 @@ const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, route
             interactive={false} 
           />
 
-          {/* Single Truck Active Direction Arrow */}
-          {singleTruckArrow && (
+          {/* Single Truck Active Direction Arrow (when not in real-time following puck mode) */}
+          {!truckPosition && singleTruckArrow && (
             <Marker 
               position={singleTruckArrow.position} 
               icon={createSingleTruckArrowIcon(singleTruckArrow.angle)} 
@@ -313,8 +540,8 @@ const MapComponent = ({ bins = [], selectedBin = null, onBinSelect = null, route
             />
           )}
 
-          {/* Auto-fit map viewport to active road route */}
-          <FitBoundsToRoute coords={roadCoordinates} />
+          {/* Auto-fit map viewport to active road route when not following */}
+          <FitBoundsToRoute coords={roadCoordinates} enabled={!isFollowing} />
         </>
       )}
     </MapContainer>
