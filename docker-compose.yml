@@ -1,0 +1,15 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: greenbin-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: greenbin
+    volumes:
+      - greenbin-mongo-data:/data/db
+
+volumes:
+  greenbin-mongo-data:
+    driver: local
