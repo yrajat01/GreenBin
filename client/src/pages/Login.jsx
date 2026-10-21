@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
-const DEFAULT_CREDENTIALS = {
-  citizen: { email: 'rajat@greenbin.com', password: '12345678' },
-  staff: { email: 'staff@greenbin.com', password: '12345678' },
-  admin: { email: 'admin@greenbin.com', password: '12345678' },
-};
 
 const Login = () => {
   const { loginMock, loginReal, user, logout } = useAuth();
@@ -15,18 +9,14 @@ const Login = () => {
   const initialRole = searchParams.get('role') || 'citizen';
 
   const [activeRole, setActiveRole] = useState(initialRole);
-  const [email, setEmail] = useState(DEFAULT_CREDENTIALS[initialRole]?.email || '');
-  const [password, setPassword] = useState(DEFAULT_CREDENTIALS[initialRole]?.password || '');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Switch active role tab and pre-fill default sample credentials (without logging in!)
   const handleRoleSelect = (role) => {
     setActiveRole(role);
     setError('');
-    const creds = DEFAULT_CREDENTIALS[role] || DEFAULT_CREDENTIALS.citizen;
-    setEmail(creds.email);
-    setPassword(creds.password);
   };
 
   const handleGoToDashboard = () => {
@@ -167,7 +157,7 @@ const Login = () => {
           </div>
 
           {/* Password Login Form */}
-          <form className="space-y-md text-left" onSubmit={handleRealSubmit}>
+          <form className="space-y-md text-left" autoComplete="off" onSubmit={handleRealSubmit}>
             <div>
               <label htmlFor="email" className="block font-label-md text-label-md text-on-surface-variant">
                 Email Address
@@ -177,12 +167,12 @@ const Login = () => {
                   id="email"
                   name="email"
                   type="email"
-                  autoComplete="email"
+                  autoComplete="off"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-sm py-sm rounded-xl bg-surface border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                  placeholder="e.g. rajat@greenbin.com"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
@@ -196,7 +186,7 @@ const Login = () => {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -229,4 +219,3 @@ const Login = () => {
 };
 
 export default Login;
-
