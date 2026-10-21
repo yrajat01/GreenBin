@@ -92,7 +92,30 @@ const seedData = async () => {
     console.log('Database seeded successfully.');
   } catch (error) {
     console.error('Error seeding database:', error);
+    throw error;
   }
 };
+
+// Standalone runner when invoked directly via CLI (e.g. `npm run seed`)
+if (require.main === module) {
+  const path = require('path');
+  require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+  require('dotenv').config();
+  const connectDB = require('../config/db');
+  const mongoose = require('mongoose');
+
+  (async () => {
+    try {
+      await connectDB();
+      await seedData();
+      console.log('🌱 Seed data initialized successfully.');
+      await mongoose.connection.close();
+      process.exit(0);
+    } catch (err) {
+      console.error('❌ Failed to run seed script:', err.message);
+      process.exit(1);
+    }
+  })();
+}
 
 module.exports = seedData;
