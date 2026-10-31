@@ -9,7 +9,6 @@ const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('citizen');
   const [zone, setZone] = useState('Zone-A');
   
   const [loading, setLoading] = useState(false);
@@ -32,15 +31,14 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const userProfile = await signupReal(name, email, password, role, zone);
+      // Citizen role is enforced
+      await signupReal(name, email, password, 'citizen', zone);
       setSuccess(true);
       
-      // Redirect based on role after brief success message
+      // Redirect to citizen dashboard
       setTimeout(() => {
-        if (userProfile.role === 'admin') navigate('/admin');
-        else if (userProfile.role === 'staff') navigate('/staff/route');
-        else navigate('/citizen');
-      }, 1500);
+        navigate('/citizen');
+      }, 1200);
     } catch (err) {
       setError(err.message || 'Registration failed. Try a different email address.');
     } finally {
@@ -60,10 +58,10 @@ const Signup = () => {
           <span className="font-headline-md text-headline-md font-bold text-primary tracking-tight">GreenBin</span>
         </Link>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-on-surface">
-          Create a new account
+          Create Citizen Account
         </h2>
         <p className="mt-2 text-center text-sm text-on-surface-variant">
-          Join the smart sustainability network
+          Join the smart municipal sustainability network
         </p>
       </div>
 
@@ -78,7 +76,7 @@ const Signup = () => {
 
           {success && (
             <div className="mb-md p-sm bg-secondary-container text-on-secondary-container rounded-xl font-bold border border-secondary/20 text-left">
-              Registration successful! Redirecting...
+              Registration successful! Redirecting to your dashboard...
             </div>
           )}
 
@@ -112,7 +110,7 @@ const Signup = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-sm py-sm rounded-xl bg-surface border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                  placeholder="e.g. john@greenbin.com"
+                  placeholder="e.g. john@example.com"
                 />
               </div>
             </div>
@@ -134,40 +132,24 @@ const Signup = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-sm">
-              <div>
-                <label className="block font-label-md text-label-md text-on-surface-variant">
-                  System Role
-                </label>
-                <div className="mt-1">
-                  <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="w-full px-sm py-sm rounded-xl bg-surface border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md"
-                  >
-                    <option value="citizen">Citizen</option>
-                    <option value="staff">Staff Driver</option>
-                    <option value="admin">Administrator</option>
-                  </select>
-                </div>
+            <div>
+              <label className="block font-label-md text-label-md text-on-surface-variant">
+                City District Zone
+              </label>
+              <div className="mt-1">
+                <select
+                  value={zone}
+                  onChange={(e) => setZone(e.target.value)}
+                  className="w-full px-sm py-sm rounded-xl bg-surface border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md"
+                >
+                  <option value="Zone-A">Zone-A (Central District)</option>
+                  <option value="Zone-B">Zone-B (East District)</option>
+                  <option value="Zone-C">Zone-C (North Suburbs)</option>
+                </select>
               </div>
-
-              <div>
-                <label className="block font-label-md text-label-md text-on-surface-variant">
-                  City District Zone
-                </label>
-                <div className="mt-1">
-                  <select
-                    value={zone}
-                    onChange={(e) => setZone(e.target.value)}
-                    className="w-full px-sm py-sm rounded-xl bg-surface border border-outline-variant focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md"
-                  >
-                    <option value="Zone-A">Zone-A (Central)</option>
-                    <option value="Zone-B">Zone-B (East)</option>
-                    <option value="Zone-C">Zone-C (North)</option>
-                  </select>
-                </div>
-              </div>
+              <p className="text-[11px] text-on-surface-variant mt-1">
+                Used to show smart bins and report issues in your neighborhood.
+              </p>
             </div>
 
             <div className="pt-xs">
@@ -176,7 +158,7 @@ const Signup = () => {
                 disabled={loading || success}
                 className="w-full bg-primary text-white py-md rounded-full font-title-lg text-[16px] hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-xs"
               >
-                {loading ? 'Creating Account...' : 'Sign Up'}
+                {loading ? 'Creating Citizen Account...' : 'Sign Up as Citizen'}
                 <span className="material-symbols-outlined">person_add</span>
               </button>
             </div>
@@ -185,7 +167,7 @@ const Signup = () => {
           <div className="mt-md text-center">
             <span className="text-xs text-on-surface-variant">
               Already have an account?{' '}
-              <Link to="/login" className="text-primary font-bold hover:underline">
+              <Link to="/login?role=citizen" className="text-primary font-bold hover:underline">
                 Sign In
               </Link>
             </span>

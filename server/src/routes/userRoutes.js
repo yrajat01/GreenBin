@@ -48,12 +48,20 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// POST /api/users/signup - Local signup for creating new accounts
+// POST /api/users/signup - Citizen self-registration only
+// Staff and Administrator accounts must be added directly into the database
 router.post('/signup', async (req, res) => {
   const { name, email, password, role, zone } = req.body;
   
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Name, email, and password are required' });
+  }
+
+  // Security Gate: Reject any attempt to self-register as admin or staff
+  if (role && role !== 'citizen') {
+    return res.status(403).json({
+      message: 'Self-registration is restricted to Citizens only. Staff and Administrator accounts must be created directly in the database.'
+    });
   }
 
   try {
@@ -69,7 +77,7 @@ router.post('/signup', async (req, res) => {
       name,
       email: email.toLowerCase().trim(),
       password,
-      role: role || 'citizen',
+      role: 'citizen', // Enforce citizen role
       zone: zone || 'Zone-A',
       points: 0,
       badgesEarned: [],
@@ -79,7 +87,7 @@ router.post('/signup', async (req, res) => {
     const token = `local-${uid}`;
     
     res.status(201).json({
-      message: 'User registered successfully',
+      message: 'Citizen account registered successfully',
       token,
       user: newUser
     });

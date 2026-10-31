@@ -203,9 +203,31 @@ const Login = () => {
             </div>
           </form>
 
-          <p className="mt-md text-center text-xs text-on-surface-variant">
-            Don't have an account? <Link to="/signup" className="text-primary font-bold hover:underline">Create an Account</Link>
-          </p>
+          {/* Sign Up link for Citizens, Security notice for Staff and Admin */}
+          {activeRole === 'citizen' ? (
+            <p className="mt-md text-center text-xs text-on-surface-variant">
+              Don't have an account?{' '}
+              <Link to="/signup" className="text-primary font-bold hover:underline">
+                Create a Citizen Account
+              </Link>
+            </p>
+          ) : activeRole === 'staff' ? (
+            <div className="mt-md p-sm bg-surface-container rounded-xl text-center border border-outline-variant/30 text-xs text-on-surface-variant">
+              <div className="flex items-center justify-center gap-1 font-semibold text-on-surface mb-0.5">
+                <span className="material-symbols-outlined text-sm text-secondary">local_shipping</span>
+                Staff Portal Restricted
+              </div>
+              Staff accounts cannot be registered publicly. Credentials must be provisioned directly in the database.
+            </div>
+          ) : (
+            <div className="mt-md p-sm bg-surface-container rounded-xl text-center border border-outline-variant/30 text-xs text-on-surface-variant">
+              <div className="flex items-center justify-center gap-1 font-semibold text-on-surface mb-0.5">
+                <span className="material-symbols-outlined text-sm text-tertiary">admin_panel_settings</span>
+                Administrative Access Only
+              </div>
+              Administrator accounts cannot be registered publicly. Credentials must be added directly into the database.
+            </div>
+          )}
 
         </div>
       </div>
