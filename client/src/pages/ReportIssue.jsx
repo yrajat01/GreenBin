@@ -14,7 +14,7 @@ const ReportIssue = () => {
   // Issue details
   const [activeCategory, setActiveCategory] = useState('Foul Smell');
   const [notes, setNotes] = useState('');
-  const [photoUploaded, setPhotoUploaded] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
   const [ticketId, setTicketId] = useState('');
   
   const [loading, setLoading] = useState(false);
@@ -43,6 +43,26 @@ const ReportIssue = () => {
     setActiveCategory(cat);
   };
 
+  const handlePhotoSelect = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      setError('Please choose a JPEG or PNG photo.');
+      event.target.value = '';
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Photo must be 10MB or smaller.');
+      event.target.value = '';
+      return;
+    }
+
+    setError('');
+    setPhotoFile(file);
+  };
+
   const handleSubmitReport = async () => {
     setError('');
     setLoading(true);
@@ -51,7 +71,7 @@ const ReportIssue = () => {
         binId: validatedBin.binId,
         issueType: activeCategory,
         description: notes,
-        photoUrl: photoUploaded ? 'https://example.com/reported-waste.jpg' : ''
+        photoUrl: ''
       });
       
       setTicketId(res.report.reportId);
@@ -252,22 +272,25 @@ const ReportIssue = () => {
                     
                     <div>
                       <label className="block font-label-md text-label-md text-on-surface-variant mb-xs">Photo Evidence</label>
-                      <div 
-                        onClick={() => setPhotoUploaded(!photoUploaded)}
-                        className={`border-2 border-dashed rounded-xl p-lg flex flex-col items-center justify-center gap-xs transition-colors cursor-pointer ${
-                          photoUploaded 
-                            ? 'border-secondary bg-secondary/5' 
-                            : 'border-outline-variant bg-surface/50 hover:bg-surface'
-                        }`}
-                      >
-                        <span className={`material-symbols-outlined text-4xl ${photoUploaded ? 'text-secondary' : 'text-primary'}`}>
-                          {photoUploaded ? 'check_circle' : 'cloud_upload'}
+                      <label className={`border-2 border-dashed rounded-xl p-lg flex flex-col items-center justify-center gap-xs transition-colors cursor-pointer focus-within:ring-2 focus-within:ring-primary ${
+                        photoFile
+                          ? 'border-secondary bg-secondary/5'
+                          : 'border-outline-variant bg-surface/50 hover:bg-surface'
+                      }`}>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png"
+                          className="sr-only"
+                          onChange={handlePhotoSelect}
+                        />
+                        <span className={`material-symbols-outlined text-4xl ${photoFile ? 'text-secondary' : 'text-primary'}`}>
+                          {photoFile ? 'check_circle' : 'cloud_upload'}
                         </span>
                         <p className="font-body-md text-body-md text-on-surface">
-                          {photoUploaded ? 'Photo added: waste-image.jpg' : 'Drag & drop or browse'}
+                          {photoFile ? `Selected: ${photoFile.name}` : 'Choose a photo from your computer'}
                         </p>
-                        <p className="text-[10px] text-outline">JPEG or PNG up to 10MB (Click to simulate upload)</p>
-                      </div>
+                        <p className="text-[10px] text-outline">JPEG or PNG up to 10MB</p>
+                      </label>
                     </div>
 
                     <div>
@@ -318,7 +341,7 @@ const ReportIssue = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-on-surface-variant">Evidence</span>
-                        <span className="text-on-surface font-bold">{photoUploaded ? '1 Attachment' : 'No photo uploaded'}</span>
+                        <span className="text-on-surface font-bold">{photoFile ? photoFile.name : 'No photo selected'}</span>
                       </div>
                     </div>
                     
