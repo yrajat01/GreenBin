@@ -93,7 +93,7 @@ const CitizenDashboard = () => {
     setSubmitting(true);
     
     try {
-      const res = await api.post('/api/reports', {
+      await api.post('/api/reports', {
         binId: binId.toUpperCase().trim(),
         issueType,
         description: notes
@@ -165,7 +165,7 @@ const CitizenDashboard = () => {
 
         {/* User Info Anchor */}
         <div className="mt-auto p-sm bg-on-primary-fixed-variant rounded-xl flex items-center gap-sm">
-          <div className="w-10 h-10 rounded-full border-2 border-secondary-fixed overflow-hidden bg-surface-variant flex items-center justify-center text-white font-bold bg-primary text-lg">
+          <div className="w-10 h-10 rounded-full border-2 border-secondary-fixed overflow-hidden flex items-center justify-center text-white font-bold bg-primary text-lg">
             {user?.name?.charAt(0).toUpperCase() || 'C'}
           </div>
           <div className="flex flex-col text-left">

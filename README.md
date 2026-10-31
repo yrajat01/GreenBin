@@ -36,7 +36,9 @@ GreenBin/
 │   │   ├── context/        # AuthContext (supports mock & real auth)
 │   │   ├── pages/          # Admin, Citizen, Staff, Login, Leaderboard
 │   │   └── services/       # REST API & Socket.io client handlers
+│   ├── public/_redirects   # SPA client-side routing for Netlify/Cloudflare
 │   ├── .env.example        # Frontend environment variables template
+│   ├── vercel.json         # Vercel SPA routing and security headers
 │   └── package.json
 ├── server/                 # Node.js + Express backend & WebSocket server
 │   ├── src/
@@ -46,10 +48,16 @@ GreenBin/
 │   │   ├── routes/         # REST API endpoints (/api/bins, /api/reports, etc.)
 │   │   └── services/       # IoT simulation engine & database seeder
 │   ├── .env.example        # Backend environment variables template
+│   ├── Dockerfile          # Standalone backend container
 │   └── package.json
 ├── scripts/
 │   └── setup.js            # Cross-platform environment initialiser
-├── docker-compose.yml      # Zero-config MongoDB container for local dev
+├── Dockerfile              # Multi-stage production fullstack container
+├── docker-compose.yml      # Containerized database & fullstack app services
+├── render.yaml             # Render Blueprint deployment definition
+├── vercel.json             # Root Vercel zero-config routing
+├── Procfile                # Standard PaaS process runner
+├── DEPLOYMENT.md           # Step-by-step production hosting manual
 ├── package.json            # Root workspace scripts (concurrent runners)
 └── README.md
 ```
@@ -175,10 +183,26 @@ From the repository root:
 | `npm run dev` | Runs both backend and frontend concurrently with unified colored logs |
 | `npm run dev:server` | Starts only the Express backend server |
 | `npm run dev:client` | Starts only the Vite React frontend |
+| `npm run build` | Builds the client application for production |
+| `npm start` | Starts the production server (serves API, Sockets & Client SPA) |
 | `npm run seed` | Re-seeds the MongoDB database with initial sample bins, users, and reports |
 | `npm run docker:up` | Starts a local MongoDB instance in the background via Docker Compose |
-| `npm run docker:down` | Stops the local MongoDB Docker container |
-| `npm run build` | Builds the client application for production |
+| `npm run docker:all` | Builds and runs the full stack (App + MongoDB) in Docker containers |
+| `npm run docker:down` | Stops all running Docker containers |
+
+---
+
+## 🌐 Production Deployment & Hosting
+
+GreenBin is configured for immediate, hassle-free deployment across major cloud providers:
+
+* **Vercel + Render (Recommended):** Deploy frontend to [Vercel](https://vercel.com) using [`vercel.json`](./vercel.json) and backend to [Render](https://render.com) using [`render.yaml`](./render.yaml).
+* **Single-Service Deploy:** Deploy to Render, Railway, or Heroku as a single service using `npm start` (Express serves the compiled Vite SPA directly from `client/dist`).
+* **Docker Container:** Build with `docker build -t greenbin .` or deploy with `docker-compose.yml`.
+
+👉 **For complete step-by-step instructions and environment variable guides, read [DEPLOYMENT.md](./DEPLOYMENT.md).**
+
+---
 
 ---
 

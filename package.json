@@ -10,9 +10,16 @@
     "dev:server": "npm --prefix server run dev",
     "dev:client": "npm --prefix client run dev",
     "build": "npm --prefix client run build",
+    "build:all": "npm --prefix client run build",
+    "start": "node server/src/server.js",
     "seed": "npm --prefix server run seed",
-    "docker:up": "docker compose up -d",
+    "docker:up": "docker compose up -d mongodb",
+    "docker:all": "docker compose up --build -d",
     "docker:down": "docker compose down"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "keywords": [
     "smart-waste-management",
