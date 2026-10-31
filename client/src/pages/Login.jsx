@@ -49,13 +49,6 @@ const Login = () => {
     }
   };
 
-  const fillSampleAccount = (sampleEmail, samplePassword, role) => {
-    setEmail(sampleEmail);
-    setPassword(samplePassword);
-    setActiveRole(role);
-    setError('');
-  };
-
   return (
     <div className="min-h-screen bg-surface flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-body-md">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -210,38 +203,8 @@ const Login = () => {
             </div>
           </form>
 
-          {/* Quick Demo Credentials */}
-          <div className="mt-lg pt-md border-t border-outline-variant/30 text-left">
-            <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-xs">
-              Sample Demo Accounts (Password: 12345678)
-            </p>
-            <div className="flex flex-wrap gap-xs">
-              <button
-                type="button"
-                onClick={() => fillSampleAccount('rajat@greenbin.com', '12345678', 'citizen')}
-                className="text-[11px] px-2 py-1 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg font-semibold transition-all border border-primary/20"
-              >
-                Citizen Demo
-              </button>
-              <button
-                type="button"
-                onClick={() => fillSampleAccount('staff@greenbin.com', '12345678', 'staff')}
-                className="text-[11px] px-2 py-1 bg-secondary/10 hover:bg-secondary/20 text-secondary rounded-lg font-semibold transition-all border border-secondary/20"
-              >
-                Staff Demo
-              </button>
-              <button
-                type="button"
-                onClick={() => fillSampleAccount('admin@greenbin.com', '12345678', 'admin')}
-                className="text-[11px] px-2 py-1 bg-tertiary-container/30 hover:bg-tertiary-container/50 text-tertiary rounded-lg font-semibold transition-all border border-tertiary/20"
-              >
-                Admin Demo
-              </button>
-            </div>
-          </div>
-
           <p className="mt-md text-center text-xs text-on-surface-variant">
-            Need your own personal dashboard? <Link to="/signup" className="text-primary font-bold hover:underline">Create an Account</Link>
+            Don't have an account? <Link to="/signup" className="text-primary font-bold hover:underline">Create an Account</Link>
           </p>
 
         </div>
