@@ -1,19 +1,17 @@
 const Bin = require('../models/Bin');
-const User = require('../models/User');
 const Report = require('../models/Report');
 const Route = require('../models/Route');
 const Collection = require('../models/Collection');
 
 const seedData = async () => {
   try {
-    // Clear existing data
+    // Clear existing infrastructure data (never delete user accounts)
     await Bin.deleteMany();
-    await User.deleteMany();
     await Report.deleteMany();
     await Route.deleteMany();
     await Collection.deleteMany();
     
-    console.log('Cleared database collections.');
+    console.log('Cleared infrastructure collections.');
 
     // 1. Seed Bins (20 Bins)
     const depotLat = 26.8467;
@@ -50,26 +48,12 @@ const seedData = async () => {
     await Bin.insertMany(binsData);
     console.log(`Pre-seeded ${binsData.length} bins.`);
 
-    // 2. Seed Users
-    const usersData = [
-      { uid: 'uid-citizen', name: 'Rajat Yadav', email: 'rajat@greenbin.com', password: '12345678', role: 'citizen', zone: 'Zone-A', points: 120, reportCount: 4, badgesEarned: ['First Report'] },
-      { uid: 'uid-ritik', name: 'Ritik Prajapati', email: 'ritik@greenbin.com', password: '12345678', role: 'citizen', zone: 'Zone-A', points: 90, reportCount: 3 },
-      { uid: 'uid-anshuman', name: 'Anshuman Shukla', email: 'anshuman@greenbin.com', password: '12345678', role: 'citizen', zone: 'Zone-B', points: 60, reportCount: 2 },
-      { uid: 'uid-priyanshu', name: 'Priyanshu Singh', email: 'priyanshu@greenbin.com', password: '12345678', role: 'citizen', zone: 'Zone-B', points: 30, reportCount: 1 },
-      { uid: 'uid-devta', name: 'Devta User', email: 'devta@greenbin.com', password: '12345678', role: 'citizen', zone: 'Zone-C', points: 15, reportCount: 0 },
-      { uid: 'uid-staff', name: 'Staff Collector', email: 'staff@greenbin.com', password: '12345678', role: 'staff', zone: 'Zone-A', points: 0 },
-      { uid: 'uid-admin', name: 'Officer Sarah K.', email: 'admin@greenbin.com', password: '12345678', role: 'admin', zone: 'Zone-A', points: 0 }
-    ];
-
-    await User.insertMany(usersData);
-    console.log(`Pre-seeded ${usersData.length} users.`);
-
-    // 3. Pre-seed Smell Reports for the 2 smell_reported bins
+    // 2. Pre-seed Smell Reports for the 2 smell_reported bins
     const reportsData = [
       {
         reportId: 'TK-2026-0891',
         binId: 'GB-008',
-        userId: 'uid-citizen',
+        userId: 'system-report',
         issueType: 'Foul Smell',
         description: 'Noticeable foul smell around Oak Street entrance.',
         status: 'pending',
@@ -78,7 +62,7 @@ const seedData = async () => {
       {
         reportId: 'TK-2026-0892',
         binId: 'GB-009',
-        userId: 'uid-ritik',
+        userId: 'system-report',
         issueType: 'Foul Smell',
         description: 'A strong smell is spreading from the bin. Heavy dumping observed.',
         status: 'pending',
@@ -89,7 +73,7 @@ const seedData = async () => {
     await Report.insertMany(reportsData);
     console.log(`Pre-seeded ${reportsData.length} smell reports.`);
 
-    console.log('Database seeded successfully.');
+    console.log('Database seeded successfully (bins & infrastructure).');
   } catch (error) {
     console.error('Error seeding database:', error);
     throw error;

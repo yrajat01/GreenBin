@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const { loginMock, loginReal, user, logout } = useAuth();
+  const { loginReal, user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const initialRole = searchParams.get('role') || 'citizen';
@@ -35,20 +35,15 @@ const Login = () => {
     }
     setLoading(true);
     try {
-      const loggedUser = await loginReal(email, password);
+      const loggedUser = await loginReal(email, password, activeRole);
       if (loggedUser.role === 'admin') navigate('/admin');
       else if (loggedUser.role === 'staff') navigate('/staff/route');
       else navigate('/citizen');
     } catch (err) {
-      // Fallback to mock authentication for offline/testing if real endpoint fails
-      try {
-        const mockUser = await loginMock(activeRole);
-        if (mockUser.role === 'admin') navigate('/admin');
-        else if (mockUser.role === 'staff') navigate('/staff/route');
-        else navigate('/citizen');
-      } catch (mockErr) {
-        setError(err.message || 'Authentication failed. Please check credentials.');
-      }
+      const errorMsg = err.message === 'Failed to fetch'
+        ? 'Unable to connect to the backend server. Please ensure the backend is running.'
+        : (err.message || 'Authentication failed. Please check credentials.');
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -111,7 +106,7 @@ const Login = () => {
             </div>
           )}
 
-          {/* User Type Selection Tabs (No auto-login on click) */}
+          {/* User Type Selection Tabs */}
           <div className="mb-lg border-b border-outline-variant/30 pb-lg">
             <label className="block text-left font-label-md text-label-md text-on-surface-variant mb-xs">
               Select User Type
@@ -186,7 +181,7 @@ const Login = () => {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="new-password"
+                  autoComplete="current-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -202,14 +197,14 @@ const Login = () => {
                 disabled={loading}
                 className="w-full bg-primary text-white py-md rounded-full font-title-lg text-[16px] hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-xs"
               >
-                {loading ? 'Authenticating...' : 'Sign In'}
+                {loading ? 'Verifying with Backend...' : 'Sign In'}
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
             </div>
           </form>
 
           <p className="mt-md text-center text-xs text-on-surface-variant">
-            Or, create a new account: <Link to="/signup" className="text-primary font-bold hover:underline">Sign Up</Link>
+            Don't have an account? <Link to="/signup" className="text-primary font-bold hover:underline">Create an Account</Link>
           </p>
 
         </div>

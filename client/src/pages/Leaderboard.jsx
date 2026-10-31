@@ -166,15 +166,17 @@ const Leaderboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10 bg-white">
-                {getActiveList().map((citizen, idx) => (
+                {getActiveList().map((citizen, idx) => {
+                  const isCurrentUser = (citizen.uid && user?.uid && citizen.uid === user.uid) || (citizen.name && user?.name && citizen.name === user.name);
+                  return (
                   <tr 
                     key={citizen.uid ? `${citizen.uid}-${idx}` : idx} 
-                    className="hover:bg-surface-variant/20 transition-colors group relative cursor-pointer"
+                    className={isCurrentUser ? "bg-primary/10 hover:bg-primary/15 transition-colors group relative cursor-pointer font-semibold" : "hover:bg-surface-variant/20 transition-colors group relative cursor-pointer"}
                   >
                     {/* Rank Badge */}
                     <td className="px-md py-sm whitespace-nowrap font-bold text-on-surface text-sm">
                       <div className="flex items-center gap-xs">
-                        <span className="w-1 group-hover:bg-primary h-full absolute left-0 top-0 transition-all"></span>
+                        <span className={`w-1 ${isCurrentUser ? 'bg-primary' : 'group-hover:bg-primary'} h-full absolute left-0 top-0 transition-all`}></span>
                         {idx === 0 ? '🏆 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
                       </div>
                     </td>
@@ -186,6 +188,11 @@ const Leaderboard = () => {
                           {citizen.name.charAt(0)}
                         </div>
                         <span className="font-bold text-on-surface text-sm">{citizen.name}</span>
+                        {isCurrentUser && (
+                          <span className="text-[10px] bg-primary text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                            You
+                          </span>
+                        )}
                       </div>
                     </td>
                     
@@ -224,7 +231,8 @@ const Leaderboard = () => {
                       {citizen.points} 🌿
                     </td>
                   </tr>
-                ))}
+                );
+              })}
               </tbody>
             </table>
             </div>

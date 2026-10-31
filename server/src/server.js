@@ -23,7 +23,6 @@ const userRoutes = require('./routes/userRoutes');
 
 // Import Models for initial seeding check
 const Bin = require('./models/Bin');
-const User = require('./models/User');
 
 // Initialize Firebase
 initFirebase();
@@ -119,11 +118,11 @@ app.use('/api/route', routeRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/users', userRoutes);
 
-// Trigger seeding if database is empty or if query parameter ?seed=true is passed
+// Trigger seeding if database has no bins or if manually requested
 app.get('/api/seed', async (req, res) => {
   try {
     await seedData();
-    res.json({ message: 'Database seeded successfully!' });
+    res.json({ message: 'Database infrastructure seeded successfully!' });
   } catch (error) {
     res.status(500).json({ message: 'Seeding failed', error: error.message });
   }
@@ -176,11 +175,10 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    // Seed check: seed if no bins or users exist
+    // Seed check: seed bin infrastructure only if no bins exist in database
     const binCount = await Bin.countDocuments();
-    const userCount = await User.countDocuments();
-    if (binCount === 0 || userCount === 0) {
-      console.log('No bins or users found in database. Seeding default dataset...');
+    if (binCount === 0) {
+      console.log('No bins found in database. Initializing smart bins infrastructure...');
       await seedData();
     }
     
