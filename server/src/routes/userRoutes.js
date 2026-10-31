@@ -8,9 +8,9 @@ router.get('/me', protect, async (req, res) => {
   res.json(req.user);
 });
 
-// POST /api/users/login - Local login for sample accounts
+// POST /api/users/login - Local login for users and sample accounts
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
   
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
@@ -23,12 +23,19 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
     
-    // Check password (simple plain text check for local mock accounts compatibility)
+    // Check password
     if (user.password !== password) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    // Role check if requested role is specified
+    if (role && user.role !== role) {
+      return res.status(403).json({
+        message: `Account is registered as "${user.role}", not "${role}". Please select the ${user.role.toUpperCase()} tab.`
+      });
+    }
     
-    // Generate mock/local token containing the user's uid
+    // Generate authenticated token containing the user's uid
     const token = `local-${user.uid}`;
     
     res.json({

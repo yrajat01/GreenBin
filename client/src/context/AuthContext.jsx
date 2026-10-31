@@ -24,33 +24,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Mock login for easy local development and jury review
-  const loginMock = async (role) => {
-    setLoading(true);
-    try {
-      const mockToken = `mock-${role}`;
-      localStorage.setItem('auth_token', mockToken);
-      const profile = await refreshProfile();
-      setLoading(false);
-      return profile;
-    } catch (err) {
-      setLoading(false);
-      throw err;
-    }
-  };
-
   // Real login (local MongoDB first, fallback to Firebase)
-  const loginReal = async (email, password) => {
+  const loginReal = async (email, password, role) => {
     setLoading(true);
     try {
-      // 1. Try local MongoDB login first
-      const res = await api.post('/api/users/login', { email, password });
+      // 1. Authenticate with backend API
+      const payload = { email, password };
+      if (role) payload.role = role;
+      const res = await api.post('/api/users/login', payload);
       localStorage.setItem('auth_token', res.token);
       setUser(res.user);
       setLoading(false);
       return res.user;
     } catch (err) {
-      // 2. Fallback to Firebase if available
+      // 2. Fallback to Firebase if client Firebase is explicitly enabled
       if (auth) {
         try {
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -120,9 +107,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     let unsubscribe = () => {};
     
-    // Check if we are using a mock or local token
     const token = localStorage.getItem('auth_token');
-    if (token && (token.startsWith('mock-') || token.startsWith('local-'))) {
+    // If a stale mock token exists, purge it immediately
+    if (token && token.startsWith('mock-')) {
+      localStorage.removeItem('auth_token');
+      setUser(null);
+      setLoading(false);
+    } else if (token && token.startsWith('local-')) {
       refreshProfile().finally(() => setLoading(false));
     } else if (auth) {
       // Set up Firebase auth listener
@@ -137,9 +128,8 @@ export const AuthProvider = ({ children }) => {
             logout();
           }
         } else {
-          // If no firebaseUser and no mock/local token, sign out
           const currentToken = localStorage.getItem('auth_token');
-          if (!currentToken || (!currentToken.startsWith('mock-') && !currentToken.startsWith('local-'))) {
+          if (!currentToken || !currentToken.startsWith('local-')) {
             setUser(null);
           }
         }
@@ -156,7 +146,6 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
       user,
       loading,
-      loginMock,
       loginReal,
       signupReal,
       logout,

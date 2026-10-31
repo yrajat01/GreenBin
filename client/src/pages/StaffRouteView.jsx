@@ -329,6 +329,9 @@ const StaffRouteView = () => {
             <div className="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs border border-secondary/30">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'D'}
             </div>
+            <span className="hidden md:inline-block text-xs font-semibold text-on-surface">
+              {user?.name || 'Driver'}
+            </span>
             <button
               onClick={handleLogout}
               title="Sign Out"
