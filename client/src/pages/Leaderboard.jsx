@@ -90,9 +90,16 @@ const Leaderboard = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-grow overflow-y-auto px-margin-mobile md:px-margin-desktop py-md">
+      <main className="flex-grow overflow-y-auto px-margin-mobile md:px-margin-desktop pt-md pb-24 md:pb-md">
         
         {/* Header Section */}
+        <header className="md:hidden flex justify-between items-center mb-md">
+          <Link to="/" className="font-headline-md text-headline-md font-bold text-primary">GreenBin</Link>
+          <button className="p-base text-on-surface" onClick={handleLogout} aria-label="Log out">
+            <span className="material-symbols-outlined">logout</span>
+          </button>
+        </header>
+
         <div className="mb-lg flex justify-between items-start flex-wrap gap-sm">
           <div>
             <h1 className="font-headline-lg text-headline-lg text-on-surface mb-xs font-bold">Community Leaderboard</h1>
@@ -144,7 +151,8 @@ const Leaderboard = () => {
           ) : getActiveList().length === 0 ? (
             <div className="py-xl text-center text-on-surface-variant">No citizen profiles found in this selection.</div>
           ) : (
-            <table className="min-w-full divide-y divide-outline-variant/20 text-left">
+            <div className="overflow-x-auto">
+            <table className="min-w-[700px] divide-y divide-outline-variant/20 text-left">
               <thead className="bg-surface-container-high">
                 <tr>
                   <th scope="col" className="px-md py-sm text-left font-label-md text-[11px] text-outline uppercase tracking-wider">Rank</th>
@@ -227,9 +235,29 @@ const Leaderboard = () => {
               })}
               </tbody>
             </table>
+            </div>
           )}
         </section>
       </main>
+
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant flex justify-around items-center py-sm px-gutter z-50 shadow-lg">
+        <Link className="flex flex-col items-center gap-1 text-on-surface-variant" to="/citizen">
+          <span className="material-symbols-outlined">dashboard</span>
+          <span className="font-label-md text-[10px]">Dashboard</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-on-surface-variant" to="/report">
+          <span className="material-symbols-outlined">report_problem</span>
+          <span className="font-label-md text-[10px]">Report</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-primary" to="/leaderboard" aria-current="page">
+          <span className="material-symbols-outlined">leaderboard</span>
+          <span className="font-label-md text-[10px]">Rank</span>
+        </Link>
+        <button className="flex flex-col items-center gap-1 text-on-surface-variant" onClick={handleLogout}>
+          <span className="material-symbols-outlined">logout</span>
+          <span className="font-label-md text-[10px]">Logout</span>
+        </button>
+      </nav>
 
     </div>
   );

@@ -128,7 +128,7 @@ const CitizenDashboard = () => {
     <div className="flex h-screen overflow-hidden bg-surface font-body-md text-on-surface antialiased text-left">
       
       {/* Sidebar Navigation */}
-      <aside className="hidden md:flex flex-col h-full py-md px-sm gap-xs bg-primary-container text-primary-fixed docked w-64 border-r border-outline-variant">
+      <aside className="hidden lg:flex flex-col h-full py-md px-sm gap-xs bg-primary-container text-primary-fixed docked w-64 border-r border-outline-variant">
         <Link to="/" className="flex items-center gap-sm mb-lg px-xs hover:opacity-90">
           <svg className="h-10 w-10 text-secondary-fixed" viewBox="0 0 30 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2L4.5 9C4.5 9 3 11.5 3 15C3 18.5 5.5 21 9 21C11.5 21 13.5 19.5 15 17.5C16.5 19.5 18.5 21 21 21C24.5 21 27 18.5 27 15C27 11.5 25.5 9 25.5 9L18 2" />
@@ -179,14 +179,14 @@ const CitizenDashboard = () => {
       <main className="flex-1 flex flex-col overflow-hidden bg-background">
         
         {/* Top App Bar / Stats */}
-        <header className="w-full px-margin-desktop py-md flex flex-wrap items-center justify-between gap-md border-b border-outline-variant/20 bg-surface-container-lowest">
+        <header className="w-full px-margin-mobile md:px-margin-desktop py-md flex flex-wrap items-center justify-between gap-md border-b border-outline-variant/20 bg-surface-container-lowest">
           <div className="flex-grow text-left">
             <h1 className="font-headline-md text-headline-md text-on-surface">Citizen Dashboard</h1>
             <p className="font-body-md text-body-md text-on-surface-variant">Welcome back, {user?.name || 'Citizen'}. Let's keep our city clean.</p>
           </div>
           
           {/* Stats cards */}
-          <div className="flex gap-gutter items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-gutter items-center w-full lg:w-auto">
             <div 
               onClick={() => setShowBinsModal(true)}
               className="bg-surface-container border border-outline-variant p-sm px-md rounded-xl shadow-sm flex items-center gap-sm cursor-pointer hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all"
@@ -224,7 +224,7 @@ const CitizenDashboard = () => {
         </header>
 
         {/* Dashboard Content Grid */}
-        <div className="flex-1 overflow-y-auto px-margin-desktop py-md custom-scrollbar">
+        <div className="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop pt-md pb-24 lg:pb-md custom-scrollbar">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter h-full">
             
             {/* Interactive Map Component */}
@@ -345,7 +345,7 @@ const CitizenDashboard = () => {
       </main>
       
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant flex justify-around items-center py-sm px-gutter z-50 shadow-lg">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant flex justify-around items-center py-sm px-gutter z-50 shadow-lg">
         <Link className="flex flex-col items-center gap-1 text-primary" to="/citizen">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>dashboard</span>
           <span className="font-label-md text-[10px]">Dashboard</span>

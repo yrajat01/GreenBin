@@ -317,10 +317,10 @@ const StaffRouteView = () => {
           <button
             onClick={() => navigate('/report')}
             title="Report Vehicle or Bin Issue"
-            className="hidden sm:flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-error/30 text-error hover:bg-error/5 transition-colors"
+            className="flex items-center gap-1 p-1.5 sm:px-2.5 sm:py-1.5 text-xs font-semibold rounded-lg border border-error/30 text-error hover:bg-error/5 transition-colors"
           >
             <span className="material-symbols-outlined text-sm">report_problem</span>
-            <span>Report Issue</span>
+            <span className="hidden sm:inline">Report Issue</span>
           </button>
 
           <div className="h-5 w-px bg-outline-variant/30 hidden sm:block"></div>
