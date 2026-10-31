@@ -17,8 +17,14 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const query = { email: email.toLowerCase().trim() };
+    if (role) {
+      query.role = role;
+    }
+
+    const user = await User.findOne(query);
     
+    // Do not disclose whether email exists or belongs to another role
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -26,13 +32,6 @@ router.post('/login', async (req, res) => {
     // Check password
     if (user.password !== password) {
       return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    // Role check if requested role is specified
-    if (role && user.role !== role) {
-      return res.status(403).json({
-        message: `Account is registered as "${user.role}", not "${role}". Please select the ${user.role.toUpperCase()} tab.`
-      });
     }
     
     // Generate authenticated token containing the user's uid
