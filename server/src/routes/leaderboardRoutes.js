@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     const globalTop = await User.find({ role: 'citizen' })
       .sort({ points: -1 })
       .limit(10)
-      .select('name points zone badgesEarned reportCount');
+      .select('uid name points zone badgesEarned reportCount');
       
     // Zone rankings
     const zones = ['Zone-A', 'Zone-B', 'Zone-C'];
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
       zoneTop[zone] = await User.find({ role: 'citizen', zone })
         .sort({ points: -1 })
         .limit(5)
-        .select('name points badgesEarned reportCount');
+        .select('uid name points zone badgesEarned reportCount');
     }
     
     res.json({

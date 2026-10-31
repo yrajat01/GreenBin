@@ -154,20 +154,20 @@ const AdminDashboard = () => {
     : bins.filter(b => b.zone === selectedZone);
 
   return (
-    <div className="bg-background font-body-md text-on-background min-h-screen flex flex-col overflow-hidden text-left h-screen">
+    <div className="bg-background font-body-md text-on-background min-h-screen lg:h-screen flex flex-col overflow-x-hidden lg:overflow-hidden text-left">
       
       {/* Top Navbar */}
-      <nav className="bg-primary text-primary-fixed h-16 flex items-center justify-between px-margin-desktop shadow-sm z-50 shrink-0">
-        <div className="flex items-center gap-md">
-          <Link to="/" className="flex items-center gap-md hover:opacity-85 transition-opacity">
+      <nav className="bg-primary text-primary-fixed min-h-16 flex flex-wrap items-center justify-between gap-xs px-margin-mobile py-xs md:px-margin-desktop shadow-sm z-50 shrink-0">
+        <div className="flex items-center gap-xs sm:gap-md">
+          <Link to="/" className="flex items-center gap-xs sm:gap-md hover:opacity-85 transition-opacity">
             <svg className="h-8 w-8 text-primary-fixed" viewBox="0 0 30 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2L4.5 9C4.5 9 3 11.5 3 15C3 18.5 5.5 21 9 21C11.5 21 13.5 19.5 15 17.5C16.5 19.5 18.5 21 21 21C24.5 21 27 18.5 27 15C27 11.5 25.5 9 25.5 9L18 2" />
               <path d="M12 2C12 2 13.5 4.5 13.5 8C13.5 11.5 12 14 12 14" stroke="#4CAF50" />
               <path d="M12 22V14" />
             </svg>
-            <span className="font-headline-md text-headline-md font-bold tracking-tight text-white">GreenBin Admin</span>
+            <span className="font-headline-md text-headline-md font-bold tracking-tight text-white text-sm sm:text-headline-md">GreenBin Admin</span>
           </Link>
-          <div className="h-8 w-px bg-white/30 mx-base"></div>
+          <div className="hidden sm:block h-8 w-px bg-white/30 mx-base"></div>
           
           {/* Zone Selector */}
           <div className="relative">
@@ -184,7 +184,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         
-        <div className="flex items-center gap-md">
+        <div className="flex items-center gap-xs sm:gap-md">
           {/* Notifications Dropdown (Simulated badge) */}
           <div className="relative">
             <button 
@@ -206,19 +206,19 @@ const AdminDashboard = () => {
           </div>
           
           <div className="flex items-center gap-sm bg-white/10 pr-sm py-1 pl-1 rounded-full border border-white/10 text-white">
-            <div className="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center font-bold text-white bg-secondary">
-              A
+            <div className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-white bg-secondary">
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
             </div>
-            <span className="font-label-md text-label-md">Officer Sarah K.</span>
+            <span className="hidden sm:inline font-label-md text-label-md">{user?.name || user?.email || 'Administrator'}</span>
           </div>
         </div>
       </nav>
 
       {/* Main Content Area Layout */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-visible lg:overflow-hidden pb-20 lg:pb-0">
         
         {/* Side Navigation */}
-        <aside className="w-64 bg-surface-container-low border-r border-outline-variant flex flex-col py-md px-sm gap-xs shrink-0">
+        <aside className="hidden lg:flex w-64 bg-surface-container-low border-r border-outline-variant flex-col py-md px-sm gap-xs shrink-0">
           <div className="px-sm mb-md text-left">
             <h2 className="font-title-lg text-title-lg font-black text-primary">Smart Waste</h2>
             <p className="font-label-md text-label-md text-on-surface-variant/70">Operator Portal</p>
@@ -255,10 +255,10 @@ const AdminDashboard = () => {
         </aside>
 
         {/* Core Dashboard Workspace */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar flex flex-col bg-background">
+        <main className="flex-1 min-w-0 overflow-y-auto custom-scrollbar flex flex-col bg-background">
           
           {/* Top KPIs Bar */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter p-gutter shrink-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-gutter p-gutter shrink-0">
             {/* KPI 1 */}
             <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 p-sm shadow-sm flex items-center gap-md">
               <div className="h-12 w-12 rounded-lg bg-surface-variant flex items-center justify-center text-primary">
@@ -311,17 +311,17 @@ const AdminDashboard = () => {
           </div>
 
           {/* Interactive map and sidebar grid */}
-          <div className="flex flex-1 px-gutter pb-gutter gap-gutter overflow-hidden h-[75%] min-h-[500px]">
+          <div className="flex flex-col lg:flex-row flex-1 px-gutter pb-gutter gap-gutter overflow-visible lg:overflow-hidden min-h-[900px] lg:h-[75%] lg:min-h-[500px]">
             
             {/* Left Section: Interactive Leaflet Map */}
-            <section className="flex-[3] relative rounded-xl overflow-hidden border border-outline-variant shadow-sm bg-surface-variant/20 h-full">
+            <section className="flex-[3] relative rounded-xl overflow-hidden border border-outline-variant shadow-sm bg-surface-variant/20 min-h-[420px] lg:min-h-0 lg:h-full">
               <MapComponent 
                 bins={filteredBins} 
                 routePath={routeDetails ? routeDetails.bins : []} 
               />
               
               {/* Map floating legend */}
-              <div className="absolute bottom-sm left-sm bg-surface/90 backdrop-blur-sm px-sm py-xs rounded-full shadow-lg border border-outline-variant flex items-center gap-sm z-[1000]">
+              <div className="absolute bottom-sm left-sm right-sm bg-surface/90 backdrop-blur-sm px-sm py-xs rounded-xl shadow-lg border border-outline-variant flex flex-wrap items-center gap-sm z-[1000]">
                 <div className="flex items-center gap-xs">
                   <span className="w-3 h-3 rounded-full bg-secondary"></span>
                   <span className="text-[10px] font-bold">Normal</span>
@@ -342,10 +342,10 @@ const AdminDashboard = () => {
             </section>
 
             {/* Right Section: Action Panel */}
-            <section className="flex-[2] flex flex-col gap-gutter overflow-hidden h-full">
+            <section className="flex-[2] flex flex-col gap-gutter overflow-visible lg:overflow-hidden min-h-[420px] lg:min-h-0 lg:h-full">
               
               {/* Pending Reports List */}
-              <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 flex flex-col overflow-hidden max-h-[35%] shadow-sm text-left">
+              <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 flex flex-col overflow-hidden max-h-72 lg:max-h-[35%] shadow-sm text-left">
                 <div className="px-sm py-xs bg-surface-container-high flex justify-between items-center border-b border-outline-variant/20">
                   <h3 className="font-label-md text-label-md font-bold text-primary flex items-center gap-xs">
                     <span className="material-symbols-outlined text-[18px]">forum</span>
@@ -374,7 +374,7 @@ const AdminDashboard = () => {
                         </div>
                         <button 
                           onClick={() => handleResolveReport(report.reportId)}
-                          className="bg-primary text-on-primary text-[10px] px-sm py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="bg-primary text-on-primary text-[10px] px-sm py-1 rounded-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                         >
                           Resolve
                         </button>
@@ -385,7 +385,7 @@ const AdminDashboard = () => {
               </div>
 
               {/* Critical Bins Queue */}
-              <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 flex flex-col overflow-hidden max-h-[35%] shadow-sm text-left">
+              <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 flex flex-col overflow-hidden max-h-72 lg:max-h-[35%] shadow-sm text-left">
                 <div className="px-sm py-xs bg-error-container/30 flex justify-between items-center border-b border-error/10">
                   <h3 className="font-label-md text-label-md font-bold text-error flex items-center gap-xs">
                     <span className="material-symbols-outlined text-[18px]">warning</span>
@@ -485,6 +485,29 @@ const AdminDashboard = () => {
           </div>
         </main>
       </div>
+
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 grid grid-cols-5 bg-surface-container border-t border-outline-variant shadow-lg">
+        <Link className="flex flex-col items-center gap-1 py-xs text-primary" to="/admin" aria-current="page">
+          <span className="material-symbols-outlined">dashboard</span>
+          <span className="text-[10px]">Dashboard</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 py-xs text-on-surface-variant" to="/report">
+          <span className="material-symbols-outlined">report_problem</span>
+          <span className="text-[10px]">Report</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 py-xs text-on-surface-variant" to="/leaderboard">
+          <span className="material-symbols-outlined">leaderboard</span>
+          <span className="text-[10px]">Ranks</span>
+        </Link>
+        <button className="flex flex-col items-center gap-1 py-xs text-on-surface-variant" onClick={handleGenerateRoute}>
+          <span className="material-symbols-outlined">route</span>
+          <span className="text-[10px]">Routes</span>
+        </button>
+        <button className="flex flex-col items-center gap-1 py-xs text-on-surface-variant" onClick={handleLogout}>
+          <span className="material-symbols-outlined">logout</span>
+          <span className="text-[10px]">Logout</span>
+        </button>
+      </nav>
 
     </div>
   );

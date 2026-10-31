@@ -1,10 +1,15 @@
 services:
+  # ========================================================
+  # GreenBin Backend Web Service
+  # ========================================================
   - type: web
     name: greenbin-backend
     env: node
     rootDir: server
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
@@ -17,8 +22,27 @@ services:
       - key: DEPOT_LNG
         value: "80.9462"
       - key: CLIENT_URL
-        value: "https://your-vercel-url.vercel.app"
+        sync: false
       - key: FIREBASE_PROJECT_ID
         sync: false
       - key: FIREBASE_SERVICE_ACCOUNT_KEY
+        sync: false
+
+  # ========================================================
+  # GreenBin Frontend (Optional Render Static Site)
+  # ========================================================
+  - type: web
+    name: greenbin-frontend
+    env: static
+    rootDir: client
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_SOCKET_URL
         sync: false

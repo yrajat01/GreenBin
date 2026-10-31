@@ -8,27 +8,33 @@ router.get('/me', protect, async (req, res) => {
   res.json(req.user);
 });
 
-// POST /api/users/login - Local login for sample accounts
+// POST /api/users/login - Local login for users and sample accounts
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
   
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
   try {
-    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    const query = { email: email.toLowerCase().trim() };
+    if (role) {
+      query.role = role;
+    }
+
+    const user = await User.findOne(query);
     
+    // Do not disclose whether email exists or belongs to another role
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
     
-    // Check password (simple plain text check for local mock accounts compatibility)
+    // Check password
     if (user.password !== password) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
     
-    // Generate mock/local token containing the user's uid
+    // Generate authenticated token containing the user's uid
     const token = `local-${user.uid}`;
     
     res.json({
@@ -41,12 +47,20 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// POST /api/users/signup - Local signup for creating new accounts
+// POST /api/users/signup - Citizen self-registration only
+// Staff and Administrator accounts must be added directly into the database
 router.post('/signup', async (req, res) => {
   const { name, email, password, role, zone } = req.body;
   
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Name, email, and password are required' });
+  }
+
+  // Security Gate: Reject any attempt to self-register as admin or staff
+  if (role && role !== 'citizen') {
+    return res.status(403).json({
+      message: 'Self-registration is restricted to Citizens only. Staff and Administrator accounts must be created directly in the database.'
+    });
   }
 
   try {
@@ -62,7 +76,7 @@ router.post('/signup', async (req, res) => {
       name,
       email: email.toLowerCase().trim(),
       password,
-      role: role || 'citizen',
+      role: 'citizen', // Enforce citizen role
       zone: zone || 'Zone-A',
       points: 0,
       badgesEarned: [],
@@ -72,7 +86,7 @@ router.post('/signup', async (req, res) => {
     const token = `local-${uid}`;
     
     res.status(201).json({
-      message: 'User registered successfully',
+      message: 'Citizen account registered successfully',
       token,
       user: newUser
     });

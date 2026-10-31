@@ -79,7 +79,7 @@ const Leaderboard = () => {
 
         {/* User Info Anchor */}
         <div className="mt-auto p-sm bg-surface-container rounded-xl flex items-center gap-sm border border-outline-variant/30">
-          <div className="w-10 h-10 rounded-full border-2 border-primary overflow-hidden bg-surface-variant flex items-center justify-center text-white font-bold bg-primary text-lg">
+          <div className="w-10 h-10 rounded-full border-2 border-primary overflow-hidden flex items-center justify-center text-white font-bold bg-primary text-lg">
             {user?.name?.charAt(0).toUpperCase() || 'C'}
           </div>
           <div className="flex flex-col text-left">
@@ -90,9 +90,16 @@ const Leaderboard = () => {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-grow overflow-y-auto px-margin-mobile md:px-margin-desktop py-md">
+      <main className="flex-grow overflow-y-auto px-margin-mobile md:px-margin-desktop pt-md pb-24 md:pb-md">
         
         {/* Header Section */}
+        <header className="md:hidden flex justify-between items-center mb-md">
+          <Link to="/" className="font-headline-md text-headline-md font-bold text-primary">GreenBin</Link>
+          <button className="p-base text-on-surface" onClick={handleLogout} aria-label="Log out">
+            <span className="material-symbols-outlined">logout</span>
+          </button>
+        </header>
+
         <div className="mb-lg flex justify-between items-start flex-wrap gap-sm">
           <div>
             <h1 className="font-headline-lg text-headline-lg text-on-surface mb-xs font-bold">Community Leaderboard</h1>
@@ -144,7 +151,8 @@ const Leaderboard = () => {
           ) : getActiveList().length === 0 ? (
             <div className="py-xl text-center text-on-surface-variant">No citizen profiles found in this selection.</div>
           ) : (
-            <table className="min-w-full divide-y divide-outline-variant/20 text-left">
+            <div className="overflow-x-auto">
+            <table className="min-w-[700px] divide-y divide-outline-variant/20 text-left">
               <thead className="bg-surface-container-high">
                 <tr>
                   <th scope="col" className="px-md py-sm text-left font-label-md text-[11px] text-outline uppercase tracking-wider">Rank</th>
@@ -158,15 +166,17 @@ const Leaderboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10 bg-white">
-                {getActiveList().map((citizen, idx) => (
+                {getActiveList().map((citizen, idx) => {
+                  const isCurrentUser = (citizen.uid && user?.uid && citizen.uid === user.uid) || (citizen.name && user?.name && citizen.name === user.name);
+                  return (
                   <tr 
                     key={citizen.uid ? `${citizen.uid}-${idx}` : idx} 
-                    className="hover:bg-surface-variant/20 transition-colors group relative cursor-pointer"
+                    className={isCurrentUser ? "bg-primary/10 hover:bg-primary/15 transition-colors group relative cursor-pointer font-semibold" : "hover:bg-surface-variant/20 transition-colors group relative cursor-pointer"}
                   >
                     {/* Rank Badge */}
                     <td className="px-md py-sm whitespace-nowrap font-bold text-on-surface text-sm">
                       <div className="flex items-center gap-xs">
-                        <span className="w-1 group-hover:bg-primary h-full absolute left-0 top-0 transition-all"></span>
+                        <span className={`w-1 ${isCurrentUser ? 'bg-primary' : 'group-hover:bg-primary'} h-full absolute left-0 top-0 transition-all`}></span>
                         {idx === 0 ? '🏆 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
                       </div>
                     </td>
@@ -178,6 +188,11 @@ const Leaderboard = () => {
                           {citizen.name.charAt(0)}
                         </div>
                         <span className="font-bold text-on-surface text-sm">{citizen.name}</span>
+                        {isCurrentUser && (
+                          <span className="text-[10px] bg-primary text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                            You
+                          </span>
+                        )}
                       </div>
                     </td>
                     
@@ -216,12 +231,33 @@ const Leaderboard = () => {
                       {citizen.points} 🌿
                     </td>
                   </tr>
-                ))}
+                );
+              })}
               </tbody>
             </table>
+            </div>
           )}
         </section>
       </main>
+
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant flex justify-around items-center py-sm px-gutter z-50 shadow-lg">
+        <Link className="flex flex-col items-center gap-1 text-on-surface-variant" to="/citizen">
+          <span className="material-symbols-outlined">dashboard</span>
+          <span className="font-label-md text-[10px]">Dashboard</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-on-surface-variant" to="/report">
+          <span className="material-symbols-outlined">report_problem</span>
+          <span className="font-label-md text-[10px]">Report</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-primary" to="/leaderboard" aria-current="page">
+          <span className="material-symbols-outlined">leaderboard</span>
+          <span className="font-label-md text-[10px]">Rank</span>
+        </Link>
+        <button className="flex flex-col items-center gap-1 text-on-surface-variant" onClick={handleLogout}>
+          <span className="material-symbols-outlined">logout</span>
+          <span className="font-label-md text-[10px]">Logout</span>
+        </button>
+      </nav>
 
     </div>
   );

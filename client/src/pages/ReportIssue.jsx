@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
@@ -14,7 +14,7 @@ const ReportIssue = () => {
   // Issue details
   const [activeCategory, setActiveCategory] = useState('Foul Smell');
   const [notes, setNotes] = useState('');
-  const [photoUploaded, setPhotoUploaded] = useState(false);
+  const [photoFile, setPhotoFile] = useState(null);
   const [ticketId, setTicketId] = useState('');
   
   const [loading, setLoading] = useState(false);
@@ -43,6 +43,26 @@ const ReportIssue = () => {
     setActiveCategory(cat);
   };
 
+  const handlePhotoSelect = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      setError('Please choose a JPEG or PNG photo.');
+      event.target.value = '';
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Photo must be 10MB or smaller.');
+      event.target.value = '';
+      return;
+    }
+
+    setError('');
+    setPhotoFile(file);
+  };
+
   const handleSubmitReport = async () => {
     setError('');
     setLoading(true);
@@ -51,7 +71,7 @@ const ReportIssue = () => {
         binId: validatedBin.binId,
         issueType: activeCategory,
         description: notes,
-        photoUrl: photoUploaded ? 'https://example.com/reported-waste.jpg' : ''
+        photoUrl: ''
       });
       
       setTicketId(res.report.reportId);
@@ -109,7 +129,7 @@ const ReportIssue = () => {
 
         {/* User Info Anchor */}
         <div className="mt-auto p-sm bg-surface-container rounded-xl flex items-center gap-sm border border-outline-variant/30">
-          <div className="w-10 h-10 rounded-full border-2 border-primary overflow-hidden bg-surface-variant flex items-center justify-center text-white font-bold bg-primary text-lg">
+          <div className="w-10 h-10 rounded-full border-2 border-primary overflow-hidden flex items-center justify-center text-white font-bold bg-primary text-lg">
             {user?.name?.charAt(0).toUpperCase() || 'C'}
           </div>
           <div className="flex flex-col text-left">
@@ -120,7 +140,7 @@ const ReportIssue = () => {
       </aside>
 
       {/* Main Content Canvas */}
-      <main className="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop py-md">
+      <main className="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop pt-md pb-24 md:pb-md">
         
         {/* Mobile Header */}
         <header className="md:hidden flex justify-between items-center mb-md">
@@ -252,22 +272,25 @@ const ReportIssue = () => {
                     
                     <div>
                       <label className="block font-label-md text-label-md text-on-surface-variant mb-xs">Photo Evidence</label>
-                      <div 
-                        onClick={() => setPhotoUploaded(!photoUploaded)}
-                        className={`border-2 border-dashed rounded-xl p-lg flex flex-col items-center justify-center gap-xs transition-colors cursor-pointer ${
-                          photoUploaded 
-                            ? 'border-secondary bg-secondary/5' 
-                            : 'border-outline-variant bg-surface/50 hover:bg-surface'
-                        }`}
-                      >
-                        <span className={`material-symbols-outlined text-4xl ${photoUploaded ? 'text-secondary' : 'text-primary'}`}>
-                          {photoUploaded ? 'check_circle' : 'cloud_upload'}
+                      <label className={`border-2 border-dashed rounded-xl p-lg flex flex-col items-center justify-center gap-xs transition-colors cursor-pointer focus-within:ring-2 focus-within:ring-primary ${
+                        photoFile
+                          ? 'border-secondary bg-secondary/5'
+                          : 'border-outline-variant bg-surface/50 hover:bg-surface'
+                      }`}>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png"
+                          className="sr-only"
+                          onChange={handlePhotoSelect}
+                        />
+                        <span className={`material-symbols-outlined text-4xl ${photoFile ? 'text-secondary' : 'text-primary'}`}>
+                          {photoFile ? 'check_circle' : 'cloud_upload'}
                         </span>
                         <p className="font-body-md text-body-md text-on-surface">
-                          {photoUploaded ? 'Photo added: waste-image.jpg' : 'Drag & drop or browse'}
+                          {photoFile ? `Selected: ${photoFile.name}` : 'Choose a photo from your computer'}
                         </p>
-                        <p className="text-[10px] text-outline">JPEG or PNG up to 10MB (Click to simulate upload)</p>
-                      </div>
+                        <p className="text-[10px] text-outline">JPEG or PNG up to 10MB</p>
+                      </label>
                     </div>
 
                     <div>
@@ -318,7 +341,7 @@ const ReportIssue = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-on-surface-variant">Evidence</span>
-                        <span className="text-on-surface font-bold">{photoUploaded ? '1 Attachment' : 'No photo uploaded'}</span>
+                        <span className="text-on-surface font-bold">{photoFile ? photoFile.name : 'No photo selected'}</span>
                       </div>
                     </div>
                     
@@ -443,6 +466,25 @@ const ReportIssue = () => {
 
         </div>
       </main>
+
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant flex justify-around items-center py-sm px-gutter z-50 shadow-lg">
+        <Link className="flex flex-col items-center gap-1 text-on-surface-variant" to="/citizen">
+          <span className="material-symbols-outlined">dashboard</span>
+          <span className="font-label-md text-[10px]">Dashboard</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-primary" to="/report" aria-current="page">
+          <span className="material-symbols-outlined">report_problem</span>
+          <span className="font-label-md text-[10px]">Report</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-on-surface-variant" to="/leaderboard">
+          <span className="material-symbols-outlined">leaderboard</span>
+          <span className="font-label-md text-[10px]">Rank</span>
+        </Link>
+        <button className="flex flex-col items-center gap-1 text-on-surface-variant" onClick={handleLogout}>
+          <span className="material-symbols-outlined">logout</span>
+          <span className="font-label-md text-[10px]">Logout</span>
+        </button>
+      </nav>
 
     </div>
   );
