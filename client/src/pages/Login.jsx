@@ -42,7 +42,7 @@ const Login = () => {
     } catch (err) {
       const errorMsg = err.message === 'Failed to fetch'
         ? 'Unable to connect to the backend server. Please ensure the backend is running.'
-        : (err.message || 'Authentication failed. Please check credentials.');
+        : (err.message || 'Invalid email or password');
       setError(errorMsg);
     } finally {
       setLoading(false);
