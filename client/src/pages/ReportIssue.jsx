@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
@@ -109,7 +109,7 @@ const ReportIssue = () => {
 
         {/* User Info Anchor */}
         <div className="mt-auto p-sm bg-surface-container rounded-xl flex items-center gap-sm border border-outline-variant/30">
-          <div className="w-10 h-10 rounded-full border-2 border-primary overflow-hidden bg-surface-variant flex items-center justify-center text-white font-bold bg-primary text-lg">
+          <div className="w-10 h-10 rounded-full border-2 border-primary overflow-hidden flex items-center justify-center text-white font-bold bg-primary text-lg">
             {user?.name?.charAt(0).toUpperCase() || 'C'}
           </div>
           <div className="flex flex-col text-left">

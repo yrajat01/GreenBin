@@ -6,7 +6,7 @@ import { initiateSocketConnection, disconnectSocket } from '../services/socket';
 import MapComponent from '../components/MapComponent';
 
 const AdminDashboard = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const [bins, setBins] = useState([]);
@@ -206,7 +206,7 @@ const AdminDashboard = () => {
           </div>
           
           <div className="flex items-center gap-sm bg-white/10 pr-sm py-1 pl-1 rounded-full border border-white/10 text-white">
-            <div className="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center font-bold text-white bg-secondary">
+            <div className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-white bg-secondary">
               A
             </div>
             <span className="font-label-md text-label-md">Officer Sarah K.</span>

@@ -20,6 +20,14 @@ const connectDB = async () => {
     console.error(`================================================================\n`);
     process.exit(1);
   }
+
+  mongoose.connection.on('disconnected', () => {
+    console.warn('⚠️  MongoDB connection lost. Reconnecting...');
+  });
+
+  mongoose.connection.on('reconnected', () => {
+    console.log('✅ MongoDB reconnected successfully.');
+  });
 };
 
 module.exports = connectDB;
