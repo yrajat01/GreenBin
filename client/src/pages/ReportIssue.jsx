@@ -140,7 +140,7 @@ const ReportIssue = () => {
       </aside>
 
       {/* Main Content Canvas */}
-      <main className="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop py-md">
+      <main className="flex-1 overflow-y-auto px-margin-mobile md:px-margin-desktop pt-md pb-24 md:pb-md">
         
         {/* Mobile Header */}
         <header className="md:hidden flex justify-between items-center mb-md">
@@ -466,6 +466,25 @@ const ReportIssue = () => {
 
         </div>
       </main>
+
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant flex justify-around items-center py-sm px-gutter z-50 shadow-lg">
+        <Link className="flex flex-col items-center gap-1 text-on-surface-variant" to="/citizen">
+          <span className="material-symbols-outlined">dashboard</span>
+          <span className="font-label-md text-[10px]">Dashboard</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-primary" to="/report" aria-current="page">
+          <span className="material-symbols-outlined">report_problem</span>
+          <span className="font-label-md text-[10px]">Report</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-on-surface-variant" to="/leaderboard">
+          <span className="material-symbols-outlined">leaderboard</span>
+          <span className="font-label-md text-[10px]">Rank</span>
+        </Link>
+        <button className="flex flex-col items-center gap-1 text-on-surface-variant" onClick={handleLogout}>
+          <span className="material-symbols-outlined">logout</span>
+          <span className="font-label-md text-[10px]">Logout</span>
+        </button>
+      </nav>
 
     </div>
   );
