@@ -1,82 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { api } from '../services/api';
+import routeService from '../services/routeService';
+import binService from '../services/binService';
 import { initiateSocketConnection, disconnectSocket } from '../services/socket';
 import MapComponent from '../components/MapComponent';
-
-// Realistic fallback route data for demo / offline testing
-const FALLBACK_ROUTE = {
-  routeId: 'RT-2026-TODAY',
-  totalDistance: 7.8,
-  baselineDistance: 10.9,
-  status: 'pending',
-  binSequence: ['GB-042', 'GB-005', 'GB-008', 'GB-006', 'GB-009']
-};
-
-const FALLBACK_BINS = [
-  {
-    binId: 'GB-042',
-    location: { name: 'Market St & 5th (Central Park)', lat: 26.8407, lng: 80.9422 },
-    fillLevel: 94,
-    status: 'critical',
-    zone: 'Zone-A',
-    collectionType: 'sensor'
-  },
-  {
-    binId: 'GB-005',
-    location: { name: 'North Transit Hub', lat: 26.8617, lng: 80.9362 },
-    fillLevel: 98,
-    status: 'critical',
-    zone: 'Zone-A',
-    collectionType: 'sensor'
-  },
-  {
-    binId: 'GB-008',
-    location: { name: 'Sector 15 Residential (Oak St 42)', lat: 26.8447, lng: 80.9522 },
-    fillLevel: 75,
-    status: 'smell_reported',
-    zone: 'Zone-B',
-    collectionType: 'citizen'
-  },
-  {
-    binId: 'GB-006',
-    location: { name: 'South Park Entrance', lat: 26.8387, lng: 80.9542 },
-    fillLevel: 92,
-    status: 'critical',
-    zone: 'Zone-B',
-    collectionType: 'sensor'
-  },
-  {
-    binId: 'GB-009',
-    location: { name: 'Pine Avenue Corner', lat: 26.8557, lng: 80.9382 },
-    fillLevel: 82,
-    status: 'smell_reported',
-    zone: 'Zone-B',
-    collectionType: 'citizen'
-  }
-];
-
-// Helper to compute distance in meters between 2 coordinates
-const getDistanceMeters = (lat1, lon1, lat2, lon2) => {
-  const R = 6371e3;
-  const phi1 = (lat1 * Math.PI) / 180;
-  const phi2 = (lat2 * Math.PI) / 180;
-  const dPhi = ((lat2 - lat1) * Math.PI) / 180;
-  const dLam = ((lon2 - lon1) * Math.PI) / 180;
-  const a = Math.sin(dPhi / 2) ** 2 + Math.cos(phi1) * Math.cos(phi2) * (Math.sin(dLam / 2) ** 2);
-  return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-};
-
-// Helper to compute heading angle in degrees
-const getBearing = (lat1, lng1, lat2, lng2) => {
-  const dLng = ((lng2 - lng1) * Math.PI) / 180;
-  const y = Math.sin(dLng) * Math.cos((lat2 * Math.PI) / 180);
-  const x =
-    Math.cos((lat1 * Math.PI) / 180) * Math.sin((lat2 * Math.PI) / 180) -
-    Math.sin((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.cos(dLng);
-  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
-};
+import { getDistanceMeters, getBearing } from '../utils/geo';
+import Toast from '../components/common/Toast';
 
 const StaffRouteView = () => {
   const { user, logout } = useAuth();
@@ -111,7 +41,7 @@ const StaffRouteView = () => {
   const fetchCurrentRoute = async () => {
     setLoading(true);
     try {
-      const data = await api.get('/api/route/current');
+      const data = await routeService.getCurrent();
       if (data && data.bins && data.bins.length > 0) {
         setRoute(data.route);
         setRouteBins(data.bins);
@@ -208,7 +138,7 @@ const StaffRouteView = () => {
   const handleMarkAsCollected = async (binId) => {
     try {
       if (!isDemoMode) {
-        const res = await api.patch(`/api/bins/${binId}/collect`, {});
+        const res = await binService.collect(binId);
         setCollectedBinIds(prev => [...prev, binId]);
         setRouteBins(prev => prev.map(b => b.binId === binId ? res.bin : b));
       } else {

@@ -1,23 +1,20 @@
 import { io } from 'socket.io-client';
-
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+import env from '../config/env';
 
 let socket = null;
 
 export const initiateSocketConnection = () => {
   if (socket) return socket;
-  
-  socket = io(SOCKET_URL, {
+
+  socket = io(env.socketUrl, {
     transports: ['websocket', 'polling'],
   });
-  
-  console.log('Connecting socket...');
+
   return socket;
 };
 
 export const disconnectSocket = () => {
   if (socket) {
-    console.log('Disconnecting socket...');
     socket.disconnect();
     socket = null;
   }
@@ -25,4 +22,10 @@ export const disconnectSocket = () => {
 
 export const getSocket = () => {
   return socket || initiateSocketConnection();
+};
+
+export default {
+  initiateSocketConnection,
+  disconnectSocket,
+  getSocket,
 };

@@ -26,40 +26,46 @@ GreenBin is an intelligent, real-time waste management platform connecting **cit
 
 ---
 
-## 📁 Repository Structure
+## 📁 Scalable Layered Architecture
+
+For in-depth technical documentation, please consult:
+* 📖 [**System Architecture Documentation**](docs/ARCHITECTURE.md)
+* 📡 [**REST API & WebSocket Reference**](docs/API.md)
 
 ```text
 GreenBin/
-├── client/                 # React + Vite frontend application
+├── client/                     # React 19 + Vite frontend application
 │   ├── src/
-│   │   ├── components/     # UI widgets, layout, navigation & maps
-│   │   ├── context/        # AuthContext (supports mock & real auth)
-│   │   ├── pages/          # Admin, Citizen, Staff, Login, Leaderboard
-│   │   └── services/       # REST API & Socket.io client handlers
-│   ├── public/_redirects   # SPA client-side routing for Netlify/Cloudflare
-│   ├── .env.example        # Frontend environment variables template
-│   ├── vercel.json         # Vercel SPA routing and security headers
+│   │   ├── components/         # Reusable atomic UI (Navbar, StatCard, StatusBadge, Modal, Toast)
+│   │   ├── config/             # Centralized environment configs (env.js)
+│   │   ├── constants/          # Role, route & status mappings
+│   │   ├── context/            # AuthContext & SocketContext
+│   │   ├── hooks/              # Custom domain hooks (useBins, useReports, useAuth, useSocket)
+│   │   ├── layouts/            # DashboardLayout shell
+│   │   ├── pages/              # View pages (Admin, Citizen, Staff, Login, Leaderboard, etc.)
+│   │   ├── services/           # Scalable API Client & domain services (bin, report, route, auth)
+│   │   └── utils/              # Math, Geo distance/bearing & date formatters
+│   ├── public/                 # Static assets & redirects
+│   ├── vercel.json             # Vercel SPA routing & security headers
 │   └── package.json
-├── server/                 # Node.js + Express backend & WebSocket server
+├── server/                     # Node.js + Express layered backend & WebSocket server
 │   ├── src/
-│   │   ├── config/         # MongoDB and Firebase Admin configurations
-│   │   ├── middleware/     # Role-based auth middleware
-│   │   ├── models/         # Mongoose schemas (Bin, User, Report, Route, Collection)
-│   │   ├── routes/         # REST API endpoints (/api/bins, /api/reports, etc.)
-│   │   └── services/       # IoT simulation engine & database seeder
-│   ├── .env.example        # Backend environment variables template
-│   ├── Dockerfile          # Standalone backend container
+│   │   ├── config/             # Validated env config (env.js), MongoDB, Firebase Admin
+│   │   ├── constants/          # Roles, statuses, and zone definitions
+│   │   ├── controllers/        # Request controllers (bin, report, route, leaderboard, user)
+│   │   ├── middleware/         # Auth RBAC, asyncHandler, and centralized errorHandler
+│   │   ├── models/             # Mongoose schemas (Bin, User, Report, Route, Collection)
+│   │   ├── routes/             # Scalable Express routers with centralized index
+│   │   ├── services/           # Pure domain business logic & TSP optimization
+│   │   └── utils/              # Operational ApiError, ApiResponse envelope, and logger
 │   └── package.json
-├── scripts/
-│   └── setup.js            # Cross-platform environment initialiser
-├── Dockerfile              # Multi-stage production fullstack container
-├── docker-compose.yml      # Containerized database & fullstack app services
-├── render.yaml             # Render Blueprint deployment definition
-├── vercel.json             # Root Vercel zero-config routing
-├── Procfile                # Standard PaaS process runner
-├── DEPLOYMENT.md           # Step-by-step production hosting manual
-├── package.json            # Root workspace scripts (concurrent runners)
-└── README.md
+├── docs/                       # Architectural & API Documentation
+│   ├── ARCHITECTURE.md
+│   └── API.md
+├── scripts/                    # Cross-platform environment helpers
+├── docker-compose.yml          # Containerized database & fullstack services
+├── DEPLOYMENT.md               # Production deployment manual
+└── package.json
 ```
 
 ---

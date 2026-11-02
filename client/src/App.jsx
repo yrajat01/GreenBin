@@ -1,7 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
+import { SocketProvider } from './context/SocketContext';
+import { useAuth } from './hooks/useAuth';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import { FullPageLoader } from './components/common/LoadingSpinner';
+import { ROLES, ROLE_PATHS } from './constants/roles';
 
 // Import Pages
 import Home from './pages/Home';
@@ -13,94 +18,92 @@ import StaffRouteView from './pages/StaffRouteView';
 import Leaderboard from './pages/Leaderboard';
 import Signup from './pages/Signup';
 
-// Protected Route Middleware
+// Protected Route Guard
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface">
-        <div className="text-primary font-bold animate-pulse">Authenticating Portal...</div>
-      </div>
-    );
+    return <FullPageLoader text="Authenticating Session..." />;
   }
-  
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  
+
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    // Redirect unauthorized roles to their default page
-    if (user.role === 'admin') return <Navigate to="/admin" replace />;
-    if (user.role === 'staff') return <Navigate to="/staff/route" replace />;
-    return <Navigate to="/citizen" replace />;
+    const targetPath = ROLE_PATHS[user.role] || '/citizen';
+    return <Navigate to={targetPath} replace />;
   }
-  
+
   return children;
 };
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <SocketProvider>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
 
-          {/* Citizen Protected Routes */}
-          <Route 
-            path="/citizen" 
-            element={
-              <ProtectedRoute allowedRoles={['citizen']}>
-                <CitizenDashboard />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/report" 
-            element={
-              <ProtectedRoute allowedRoles={['citizen', 'admin']}>
-                <ReportIssue />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/leaderboard" 
-            element={
-              <ProtectedRoute allowedRoles={['citizen', 'admin']}>
-                <Leaderboard />
-              </ProtectedRoute>
-            } 
-          />
+              {/* Citizen Protected Routes */}
+              <Route
+                path="/citizen"
+                element={
+                  <ProtectedRoute allowedRoles={[ROLES.CITIZEN]}>
+                    <CitizenDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/report"
+                element={
+                  <ProtectedRoute allowedRoles={[ROLES.CITIZEN, ROLES.ADMIN]}>
+                    <ReportIssue />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/leaderboard"
+                element={
+                  <ProtectedRoute allowedRoles={[ROLES.CITIZEN, ROLES.ADMIN, ROLES.STAFF]}>
+                    <Leaderboard />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* Admin Protected Routes */}
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } 
-          />
+              {/* Admin Protected Routes */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* Staff Protected Routes */}
-          <Route 
-            path="/staff/route" 
-            element={
-              <ProtectedRoute allowedRoles={['staff']}>
-                <StaffRouteView />
-              </ProtectedRoute>
-            } 
-          />
+              {/* Staff Protected Routes */}
+              <Route
+                path="/staff/route"
+                element={
+                  <ProtectedRoute allowedRoles={[ROLES.STAFF]}>
+                    <StaffRouteView />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* Catch-all Redirect */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AuthProvider>
-      <Analytics />
-    </Router>
+              {/* Catch-all Redirect */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <Analytics />
+          </SocketProvider>
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

@@ -1,11 +1,17 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { auth } from '../config/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { api } from '../services/api';
+import authService from '../services/authService';
 
-const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -14,30 +20,28 @@ export const AuthProvider = ({ children }) => {
   // Fetch current user details from MongoDB using stored token
   const refreshProfile = async () => {
     try {
-      const profile = await api.get('/api/users/me');
+      const profile = await authService.getMe();
       setUser(profile);
       return profile;
     } catch (err) {
-      console.error('Failed to fetch user profile:', err);
+      console.warn('Profile refresh failed or session expired:', err.message);
       logout();
       return null;
     }
   };
 
-  // Real login (local MongoDB first, fallback to Firebase)
-  const loginReal = async (email, password, role) => {
+  // Sign in (local MongoDB with Firebase fallback)
+  const login = async (email, password, role) => {
     setLoading(true);
     try {
-      // 1. Authenticate with backend API
       const payload = { email, password };
       if (role) payload.role = role;
-      const res = await api.post('/api/users/login', payload);
+      const res = await authService.login(payload);
       localStorage.setItem('auth_token', res.token);
       setUser(res.user);
       setLoading(false);
       return res.user;
     } catch (err) {
-      // 2. Fallback to Firebase if client Firebase is explicitly enabled
       if (auth) {
         try {
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -57,26 +61,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Real signup (local MongoDB first, fallback to Firebase)
-  const signupReal = async (name, email, password, role = 'citizen', zone = 'Zone-A') => {
+  // Sign up (Citizen self-registration)
+  const signup = async (name, email, password, role = 'citizen', zone = 'Zone-A') => {
     setLoading(true);
     try {
-      // 1. Try local MongoDB signup first
-      const res = await api.post('/api/users/signup', { name, email, password, role, zone });
+      const res = await authService.signup({ name, email, password, role, zone });
       localStorage.setItem('auth_token', res.token);
       setUser(res.user);
       setLoading(false);
       return res.user;
     } catch (err) {
-      // 2. Fallback to Firebase if available
       if (auth) {
         try {
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const firebaseUser = userCredential.user;
           const token = await firebaseUser.getIdToken();
           localStorage.setItem('auth_token', token);
-          
-          await api.post('/api/reports', { binId: 'GB-001', issueType: 'Other', description: 'User Registered' }).catch(() => ({}));
           const userProfile = await refreshProfile();
           setLoading(false);
           return userProfile;
@@ -106,22 +106,27 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     let unsubscribe = () => {};
-    
+
+    const handleAuthExpired = () => {
+      logout();
+    };
+
+    window.addEventListener('auth:expired', handleAuthExpired);
+
     const token = localStorage.getItem('auth_token');
-    // If a stale mock token exists, purge it immediately
     if (token && token.startsWith('mock-')) {
+      // Purge invalid/legacy mock tokens
       localStorage.removeItem('auth_token');
       setUser(null);
       setLoading(false);
     } else if (token && token.startsWith('local-')) {
       refreshProfile().finally(() => setLoading(false));
     } else if (auth) {
-      // Set up Firebase auth listener
       unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
         if (firebaseUser) {
           try {
-            const token = await firebaseUser.getIdToken();
-            localStorage.setItem('auth_token', token);
+            const idToken = await firebaseUser.getIdToken();
+            localStorage.setItem('auth_token', idToken);
             await refreshProfile();
           } catch (err) {
             console.error('Error synchronizing Firebase user:', err);
@@ -139,19 +144,28 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      window.removeEventListener('auth:expired', handleAuthExpired);
+    };
   }, []);
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      loading,
-      loginReal,
-      signupReal,
-      logout,
-      refreshProfile
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        signup,
+        loginReal: login, // Backward-compatibility alias
+        signupReal: signup, // Backward-compatibility alias
+        logout,
+        refreshProfile,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
+
+export default AuthContext;
