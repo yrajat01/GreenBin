@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { api } from '../services/api';
+import binService from '../services/binService';
+import reportService from '../services/reportService';
+import routeService from '../services/routeService';
 import { initiateSocketConnection, disconnectSocket } from '../services/socket';
 import MapComponent from '../components/MapComponent';
 
@@ -26,14 +28,14 @@ const AdminDashboard = () => {
   // Fetch initial data
   const fetchData = async () => {
     try {
-      const binsData = await api.get('/api/bins');
+      const binsData = await binService.getAll();
       setBins(binsData);
       
-      const reportsData = await api.get('/api/reports');
+      const reportsData = await reportService.getAll();
       setReports(reportsData);
 
       // Check if there is already a pending generated route to display
-      const currentRouteRes = await api.get('/api/route/current').catch(() => null);
+      const currentRouteRes = await routeService.getCurrent().catch(() => null);
       if (currentRouteRes && currentRouteRes.route && currentRouteRes.bins) {
         setRouteDetails(currentRouteRes);
       }
@@ -114,11 +116,11 @@ const AdminDashboard = () => {
 
   const handleGenerateRoute = async () => {
     try {
-      const res = await api.get('/api/route/generate');
+      const res = await routeService.generate();
       alert(`Optimized route generated successfully! Total distance: ${res.totalDistance} km. Saved ${res.percentSaved}% travel distance.`);
       
       // Reload route
-      const currentRouteRes = await api.get('/api/route/current').catch(() => null);
+      const currentRouteRes = await routeService.getCurrent().catch(() => null);
       if (currentRouteRes) {
         setRouteDetails(currentRouteRes);
       }
@@ -129,7 +131,7 @@ const AdminDashboard = () => {
 
   const handleResolveReport = async (reportId, actionNotes = 'Resolved by administrator') => {
     try {
-      await api.patch(`/api/reports/${reportId}`, {
+      await reportService.updateStatus(reportId, {
         status: 'resolved',
         notes: actionNotes
       });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { api } from '../services/api';
+import leaderboardService from '../services/leaderboardService';
 
 const Leaderboard = () => {
   const { user, logout } = useAuth();
@@ -11,13 +11,16 @@ const Leaderboard = () => {
   const [activeTab, setActiveTab] = useState('global'); // 'global' or 'zones'
   const [activeZone, setActiveZone] = useState('Zone-A');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchLeaderboard = async () => {
     try {
-      const data = await api.get('/api/leaderboard');
+      setError(null);
+      const data = await leaderboardService.getRankings();
       setLeaderboardData(data);
     } catch (err) {
       console.error('Error fetching leaderboard:', err);
+      setError(err.message || 'Unable to load leaderboard');
     } finally {
       setLoading(false);
     }

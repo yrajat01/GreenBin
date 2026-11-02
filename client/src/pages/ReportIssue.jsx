@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { api } from '../services/api';
+import binService from '../services/binService';
+import reportService from '../services/reportService';
 
 const ReportIssue = () => {
   const { user, logout, refreshProfile } = useAuth();
@@ -29,7 +30,7 @@ const ReportIssue = () => {
     }
     setLoading(true);
     try {
-      const data = await api.get(`/api/bins/${binCode.toUpperCase().trim()}`);
+      const data = await binService.getById(binCode.toUpperCase().trim());
       setValidatedBin(data);
       setStep(2);
     } catch (err) {
@@ -67,7 +68,7 @@ const ReportIssue = () => {
     setError('');
     setLoading(true);
     try {
-      const res = await api.post('/api/reports', {
+      const res = await reportService.submit({
         binId: validatedBin.binId,
         issueType: activeCategory,
         description: notes,

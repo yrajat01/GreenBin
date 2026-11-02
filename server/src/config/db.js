@@ -1,16 +1,20 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const env = require('./env');
+const logger = require('../utils/logger');
 
-// Connection to MongoDB
+/**
+ * Connect to MongoDB with auto-reconnection and diagnostic logging
+ */
 const connectDB = async () => {
-  const mongoUri =
-    process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/greenbin";
+  const mongoUri = env.mongoUri;
 
   try {
-    console.log(`Connecting to MongoDB at: ${mongoUri.replace(/:([^:@]{4})[^:@]*@/, ':****@')}`);
+    const sanitizedUri = mongoUri.replace(/:([^:@]{4})[^:@]*@/, ':****@');
+    logger.info(`Connecting to MongoDB at: ${sanitizedUri}`);
     const conn = await mongoose.connect(mongoUri);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    logger.info(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`\n❌ MongoDB Connection Error: ${error.message}`);
+    logger.error(`\n❌ MongoDB Connection Error: ${error.message}`);
     console.error(`================================================================`);
     console.error(`  GreenBin backend could not connect to MongoDB.`);
     console.error(`  To get MongoDB running:`);
@@ -22,11 +26,11 @@ const connectDB = async () => {
   }
 
   mongoose.connection.on('disconnected', () => {
-    console.warn('⚠️  MongoDB connection lost. Reconnecting...');
+    logger.warn('⚠️  MongoDB connection lost. Reconnecting...');
   });
 
   mongoose.connection.on('reconnected', () => {
-    console.log('✅ MongoDB reconnected successfully.');
+    logger.info('✅ MongoDB reconnected successfully.');
   });
 };
 
